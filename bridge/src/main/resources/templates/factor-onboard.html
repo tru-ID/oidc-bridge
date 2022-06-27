@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>Authenticator Factors - Onboarding</title>
+</head>
+
+<body>
+    <h1>Authenticator Factor Onboarding</h1>
+    <main role="main">
+        <p>Scan the following code with the tru.ID authenticator app</p>
+        <img th:src="${factor.dataUrl}" style="width: 220px; height: 220px;" alt="onboarding qr code">
+        <p>To complete the onboarding, insert the TOPT code displayed in the app</p>
+        <form id="onboard-factor-form" action="#" th:action="@{/admin/factors/enable}" method="post">
+            <label for="code">Code:</label><br>
+            <input type="text" id="code" name="code" placeholder="123456"><br>
+            <input type="hidden" id="factor_id" name="factor_id" th:value="${factor.factorId}">
+            <input type="submit" value="Onboard">
+        </form>
+    </main>
+</body>
+
+</html>

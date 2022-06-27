@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>Sign in</title>
+</head>
+
+<body>
+    <main>
+        <h1>Checking your device...</h1>
+        <form id="mobile-check-form" action="#" th:action="@{/v2/oidc-login-check}" method="post">
+            <input type="hidden" id="mobile_flow" name="mobile_flow" value="false">
+            <input type="hidden" id="flow_id" name="flow_id" th:value="${flow_id}">
+        </form>
+    </main>
+    <script>
+        const isMobile = window.matchMedia("only screen and (max-width: 760px)").matches;
+        const isMobileInput = document.getElementById("mobile_flow");
+        isMobileInput.value = isMobile;
+
+        setTimeout(() => {
+            document.forms["mobile-check-form"].submit();
+        }, 1000);
+    </script>
+</body>
+
+</html>

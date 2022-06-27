@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>Sign in</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap');
+
+        * {
+            font-family: proxima nova, Montserrat, Arial, Helvetica, sans-serif;
+            color: #5e5e5e;
+            background-color: #f9f9f9;
+        }
+
+        body {
+            height: 100%;
+            display: grid;
+        }
+
+
+        label {
+            font-size: 14px;
+            font-weight: 600;
+            padding: 7px 10px 7px 0px;
+        }
+
+        main {
+            margin: 100px auto 8px;
+        }
+
+        main * {
+            background-color: white;
+            border-color: rgb(221, 221, 221);
+            display: block;
+        }
+
+        .form-holder {
+            display: grid;
+            justify-content: center;
+            justify-items: center;
+            background-color: white;
+        }
+
+        .form-holder * {
+            width: 100%;
+        }
+
+        .form-title {
+            /* width: 100%; */
+            border-width: 1px;
+            border-top-left-radius: 3px;
+            border-top-right-radius: 3px;
+            border-style: solid;
+            padding: 20px 42px;
+            text-align: center;
+        }
+
+        .form-title>h1 {
+            font-size: 18px;
+        }
+
+        .form-content {
+            /* width: 100%; */
+            /* padding: 20px 42px; */
+            padding: 20px 42px;
+            border-width: 1px;
+            border-top: 0px;
+            border-bottom-left-radius: 3px;
+            border-bottom-right-radius: 3px;
+            border-style: solid;
+        }
+
+        .form-content-inner * {
+            border-radius: 3px;
+            border-width: 1px;
+        }
+
+        .form-content-inner>h2 {
+            font-size: 15px;
+            text-align: center;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+
+        .form-input {
+            padding-bottom: 14px;
+        }
+
+        .form-input input {
+            padding: 6px 8px;
+            line-height: 21px;
+            box-sizing: border-box;
+        }
+
+        .button {
+            background-color: rgb(22, 98, 221);
+            border-color: rgb(22, 98, 221);
+            color: white;
+            padding: 0px 15px;
+            line-height: 42px;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <div class="form-holder">
+            <div class="form-title">
+                <img th:src="@{/images/logo.png}">
+                <!-- <h1>okta + tru.ID</h1> -->
+            </div>
+            <div class="form-content">
+                <div class="form-content-inner">
+                    <h2>Sign in</h2>
+                    <form action="#" th:action="@{/okta/handle-sign-in}" method="post">
+                        <div class="form-input">
+                            <label for="okta_username">Username</label>
+                            <input type="text" id="login_hint" name="login_hint">
+                        </div>
+                        <input class="button" type="submit" value="Sign In">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

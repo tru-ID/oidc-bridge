@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sample - Setup Okta</title>
+</head>
+<body>
+    <main role="main">
+        <h1>Setup your Okta Application</h1>
+        <p>If you wish to run a debug login, you will need:</p>
+        <ul>
+            <li>An Okta web application profile which is Open ID Connect enabled</li>
+            <li>The <code>Client ID</code> of that application</li>
+            <li>The <code>Client Secret</code> of that application</li>
+            <li>In the <b>General Settings > Login > Sign-in redirect URIs</b> section, you should add <code>http://{host-where-your-running-this}/okta/callback</code></li>
+        </ul>
+        <p>Replace the following values in the <code>application.properties</code> file:</p>
+        <ul>
+            <li><code>sample.okta.app.clientId</code> with your app <code>Client ID</code></li>
+            <li><code>sample.okta.app.clientSecret</code> with your app <code>Client Secret</code></li>
+        </ul>
+        <p>Restart the application and try the <a th:href="@{/okta/sign-in}">sign in</a> flow again.</p>
+    </main>
+</body>

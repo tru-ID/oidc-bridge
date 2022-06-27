@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>Authenticator Factors</title>
+</head>
+
+<body>
+    <h1>Authenticator Factors</h1>
+    <main role="main">
+        <h2>Create Factor</h2>
+        <form id="create-factor-form" action="#" th:action="@{/admin/factors/create}" method="post">
+            <label for="phone_number">Phone Number:</label><br>
+            <input type="text" id="phone_number" name="phone_number" placeholder="+44"><br>
+            <label for="username">Username:</label><br>
+            <input type="text" id="username" name="username" placeholder="something@okta.com"><br>
+            <input type="submit" value="Create">
+        </form>
+        <h2>Registered Factors</h1>
+            <p th:if="${factors == null or factors.isEmpty()}">No registered factors...</p>
+            <table th:unless="${factors == null or factors.isEmpty()}">
+                <tr>
+                    <th>Factor ID</th>
+                    <th>Username</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Operations</th>
+                </tr>
+                <th:block th:each="f : ${factors}">
+                    <tr>
+                        <td th:text="${f.factorId}"></td>
+                        <td th:text="${f.externalUserId}"></td>
+                        <td th:text="${f.type}"></td>
+                        <td th:text="${f.status}"></td>
+                        <td><button type="button"
+                                th:onclick="disableFactor([[@{/admin/factors}]],[[${f.factorId}]])">Disable</button>
+                        </td>
+                    </tr>
+                </th:block>
+            </table>
+    </main>
+    <script>
+        function disableFactor(baseUrl, factorId) {
+            const options = {
+                method: "POST",
+            };
+            fetch(`${baseUrl}/${factorId}/disable`, options)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("not a 2xx response");
+                    }
+                    window.location.href = "/admin/factors";
+                })
+                .catch(err => console.log(`failed to disable factor: ${err}`));
+        }
+    </script>
+</body>
+
+</html>

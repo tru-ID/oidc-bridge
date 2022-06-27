@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>Sample - Debug Result</title>
+</head>
+<body>
+    <main role="main">
+        <h1>Callback Result</h1>
+        <div th:if="${tokens}">
+            <p>id token: <span id="id-token-holder" th:text="${tokens.idToken}"></span></p>
+            <div id="okta-info-holder">
+            </div>
+        </div>
+        <div th:if="${errors}">
+            <h2>Something went wrong</h2>
+            <p>error: <span th:text="${errors.error}"></span></p>
+            <p>description: <span th:text="${errors.description}"></span></p>
+        </div>
+    </main>
+    <script>
+        function parseJwt(token) {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+
+            return JSON.parse(jsonPayload);
+        };
+
+        const idToken = document.getElementById("id-token-holder").textContent;
+
+        const {sub, name, preferred_username} = parseJwt(idToken);
+
+        const infoDiv = document.getElementById("okta-info-holder");
+
+        const nameParagraph = document.createElement("p")
+        const nameText = document.createTextNode(`Okta Name: ${name}`)
+        nameParagraph.appendChild(nameText);
+        infoDiv.appendChild(nameParagraph)
+
+        const usernameParagraph = document.createElement("p")
+        const usernameText = document.createTextNode(`Okta Username: ${preferred_username}`)
+        usernameParagraph.appendChild(usernameText);
+        infoDiv.appendChild(usernameParagraph)
+        
+        const subParagraph = document.createElement("p")
+        const subText = document.createTextNode(`Okta User ID: ${sub}`)
+        subParagraph.appendChild(subText);
+        infoDiv.appendChild(subParagraph)
+    </script>
+</body>
+</html>
