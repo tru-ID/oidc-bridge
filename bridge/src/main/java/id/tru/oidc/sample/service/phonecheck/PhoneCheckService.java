@@ -47,7 +47,7 @@ public class PhoneCheckService {
 
     public Check createCheck(String phoneNumber, String reference) {
         CheckCreate cc = new CheckCreate(phoneNumber);
-        cc.setRedirectUrl(sampleBaseUrl + "/check/callback");
+        cc.setRedirectUrl(sampleBaseUrl + "/bridge/check/callback");
         cc.setReferenceId(reference);
 
         LOG.debug("creating check for {}", cc);
@@ -66,7 +66,7 @@ public class PhoneCheckService {
     public Check createCheckForPush(String phoneNumber, String reference) {
         CheckCreate cc = new CheckCreate(phoneNumber);
         cc.setCallbackUrl(authenticatorCallback);
-        cc.setRedirectUrl(sampleBaseUrl + "/check/callback_push");
+        cc.setRedirectUrl(sampleBaseUrl + "/bridge/check/callback_push");
         cc.setReferenceId(reference);
 
         LOG.debug("creating check[push] for {}", cc);

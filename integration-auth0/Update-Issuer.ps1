@@ -30,7 +30,7 @@ Write-Debug (ConvertTo-Json -Depth 5 $Configuration)
 $Configuration.authenticator = @{ 
     issuer_name = "oidc-auth0-issuer"
     challenge_default_message = "Please confirm your auth0 phone number"
-    challenge_callback_url = "$NgrokTargetUri/challenge/callback"
+    challenge_callback_url = "$NgrokTargetUri/bridge/challenge/callback"
 }
 
 Write-Debug "New config:"

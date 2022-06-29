@@ -11,7 +11,7 @@ exports.onExecutePostLogin = async (event, api) => {
   const userIp = event.request.ip;
 
   if (!phoneNumber) {
-    api.access.deny(`user ${userId} doesn not have a phone number to verify`);
+    api.access.deny(`user ${userId} does not have a phone number to verify`);
     return;
   }
 
@@ -25,7 +25,7 @@ exports.onExecutePostLogin = async (event, api) => {
   });
 
   const appBaseUrl = event.secrets.APP_BASE_URL;
-  api.redirect.sendUserTo(`${appBaseUrl}/auth0/action/redirect`, {
+  api.redirect.sendUserTo(`${appBaseUrl}/bridge/auth0/action/redirect`, {
     query: { session_token: token },
   });
 };

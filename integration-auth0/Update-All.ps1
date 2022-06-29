@@ -27,7 +27,7 @@ $OIDCParams = @{
     ProjectId      = $Config.TRU_PROJECT_ID
     AccessToken    = $AccessToken
     ApiBaseUrl     = $TruIDBaseUrl
-    RedirectUri    = "$($Config.SAMPLE_PUBLIC_URL)/auth0/oidc/redirect"
+    RedirectUri    = "$($Config.SAMPLE_PUBLIC_URL)/bridge/auth0/oidc/redirect"
 }
 $null = ./Update-OIDCClient @OIDCParams
 
@@ -40,25 +40,5 @@ $AuthenticatorParams = @{
     ApiBaseUrl     = $TruIDBaseUrl
 }
 $null = ./Update-Issuer @AuthenticatorParams
-
-# Write-Debug "Updating Okta Debug App..."
-# $OktaParams = @{
-#     NgrokTargetUri = $NgrokTargetUri
-#     ApiKey         = $Config.SAMPLE_OKTA_API_KEY
-#     Domain         = $Config.SAMPLE_OKTA_DOMAIN
-#     AppId          = $Config.SAMPLE_OKTA_APP_CLIENT_ID
-# }
-# $null = ./Update-OktaApp @OktaParams
-
-# Write-Debug "Updating Okta Idp..."
-# $OktaIdpParams = @{
-#     ApiKey              = $Config.SAMPLE_OKTA_API_KEY
-#     Domain              = $Config.SAMPLE_OKTA_DOMAIN
-#     IdpId               = $Config.SAMPLE_OKTA_IDP_ID
-#     ApiBaseUrl          = $TruIDBaseUrl
-#     TruOidcClientId     = $Config.TRU_OIDC_CLIENT_ID
-#     TruOidcClientSecret = $Config.TRU_OIDC_CLIENT_SECRET
-# }
-# $null = ./Update-OktaIdp @OktaIdpParams
 
 Write-Debug "All OK"

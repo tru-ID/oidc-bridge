@@ -45,8 +45,8 @@ import id.tru.oidc.sample.service.auth0.Auth0User;
 import id.tru.oidc.sample.service.context.SampleContext;
 import id.tru.oidc.sample.service.context.SampleContextRepository;
 
-@RequestMapping("/auth0")
 @Controller
+@RequestMapping("/bridge/auth0")
 public class Auth0RedirectController {
     private static final Logger LOG = LoggerFactory.getLogger(Auth0RedirectController.class);
 
@@ -100,7 +100,7 @@ public class Auth0RedirectController {
         String authUri = UriComponentsBuilder.fromUri(baseAuthUri)
                                              .queryParam("client_id", oidcClientId)
                                              .queryParam("scope", "openid profile")
-                                             .queryParam("redirect_uri", servicePublicBaseUrl + "/auth0/oidc/redirect")
+                                             .queryParam("redirect_uri", servicePublicBaseUrl + "/bridge/auth0/oidc/redirect")
                                              .queryParam("response_type", "code")
                                              .queryParam("login_hint", ctx.getUser()
                                                                           .getId())
@@ -131,7 +131,7 @@ public class Auth0RedirectController {
         String formBody = UriComponentsBuilder.fromUriString("")
                                               .queryParam("code", code)
                                               .queryParam("grant_type", "authorization_code")
-                                              .queryParam("redirect_uri", servicePublicBaseUrl + "/auth0/oidc/redirect")
+                                              .queryParam("redirect_uri", servicePublicBaseUrl + "/bridge/auth0/oidc/redirect")
                                               .queryParam("client_id", oidcClientId)
                                               .queryParam("client_secret", oidcClientSecret)
                                               .encode()

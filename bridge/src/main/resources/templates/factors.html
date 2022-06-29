@@ -14,7 +14,7 @@
     <h1>Authenticator Factors</h1>
     <main role="main">
         <h2>Create Factor</h2>
-        <form id="create-factor-form" action="#" th:action="@{/admin/factors/create}" method="post">
+        <form id="create-factor-form" action="#" th:action="@{/bridge/admin/factors/create}" method="post">
             <label for="phone_number">Phone Number:</label><br>
             <input type="text" id="phone_number" name="phone_number" placeholder="+44"><br>
             <label for="username">Username:</label><br>
@@ -38,7 +38,7 @@
                         <td th:text="${f.type}"></td>
                         <td th:text="${f.status}"></td>
                         <td><button type="button"
-                                th:onclick="disableFactor([[@{/admin/factors}]],[[${f.factorId}]])">Disable</button>
+                                th:onclick="disableFactor([[@{/bridge/admin/factors}]],[[${f.factorId}]])">Disable</button>
                         </td>
                     </tr>
                 </th:block>
@@ -54,7 +54,7 @@
                     if (!response.ok) {
                         throw new Error("not a 2xx response");
                     }
-                    window.location.href = "/admin/factors";
+                    window.location.href = "/bridge/admin/factors";
                 })
                 .catch(err => console.log(`failed to disable factor: ${err}`));
         }

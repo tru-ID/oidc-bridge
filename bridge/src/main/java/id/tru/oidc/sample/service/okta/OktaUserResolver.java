@@ -42,9 +42,9 @@ public class OktaUserResolver implements IdpUserResolver {
         String filter = "profile.email eq \"" + email + "\"";
 
         String requestUri = UriComponentsBuilder.fromUriString(baseUri)
-                .queryParam("filter", filter)
-                .build()
-                .toString();
+                                                .queryParam("filter", filter)
+                                                .build()
+                                                .toString();
 
         OktaUserResult[] results = null;
         try {
@@ -67,9 +67,9 @@ public class OktaUserResolver implements IdpUserResolver {
         }
 
         LOG.debug("Found user id={} login={}", results[0].getId(), results[0].getProfile()
-                .getLogin());
+                                                                             .getLogin());
         return Optional.ofNullable(results[0])
-                .map(result -> toUser(email, result));
+                       .map(result -> toUser(email, result));
     }
 
     private static OktaUser toUser(String email, OktaUserResult result) {

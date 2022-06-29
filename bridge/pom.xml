@@ -56,9 +56,27 @@
         <version>3.8.1</version>
       </plugin>
       <plugin>
+        <groupId>com.google.cloud.tools</groupId>
+        <artifactId>jib-maven-plugin</artifactId>
+        <version>3.2.1</version>
+        <configuration>
+          <from>
+            <image>eclipse-temurin:17-jre</image>
+          </from>
+          <to>
+            <image>tru.id/oidc-bridge</image>
+          </to>
+          <container>
+            <ports>
+              <port>8082</port>
+            </ports>
+          </container>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>com.diffplug.spotless</groupId>
         <artifactId>spotless-maven-plugin</artifactId>
-        <version>2.21.0</version>
+        <version>2.22.8</version>
         <configuration>
           <java>
             <eclipse>

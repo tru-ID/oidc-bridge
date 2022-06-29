@@ -35,8 +35,8 @@ Write-Debug (ConvertTo-Json -Depth 5 $Configuration)
 #}
 
 $Configuration.oidc = @{
-    flow_post_url   = "$NgrokTargetUri/v2/oidc-login"
-    flow_result_url = "$NgrokTargetUri/result"
+    flow_post_url   = "$NgrokTargetUri/bridge/oidc-login"
+    flow_result_url = "$NgrokTargetUri/bridge/result"
     login_hint_label = "Auth0 Username"
 }
 

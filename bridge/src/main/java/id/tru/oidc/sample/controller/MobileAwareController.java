@@ -37,7 +37,7 @@ import id.tru.oidc.sample.service.phonecheck.Check;
 import id.tru.oidc.sample.service.phonecheck.PhoneCheckService;
 
 @Controller
-@RequestMapping("/v2")
+@RequestMapping("/bridge")
 public class MobileAwareController {
     private static final Logger LOG = LoggerFactory.getLogger(MobileAwareController.class);
 
@@ -74,17 +74,17 @@ public class MobileAwareController {
         // context with a login_hint might've been created before (e.g. auth0 action)
         // otherwise create brand new context
         SampleContext ctx = contextRepository.findByLoginHint(loginHint)
-                .map(c -> {
-                    c.setFlowId(flowId);
-                    c.setFlowCallbackUrl(flowPatchUrl);
-                    c.setState(state);
-                    return c;
-                })
-                .orElseGet(() -> {
-                    var c = SampleContext.ofFlow(flowId, flowPatchUrl, state);
-                    c.setLoginHint(loginHint);
-                    return c;
-                });
+                                             .map(c -> {
+                                                 c.setFlowId(flowId);
+                                                 c.setFlowCallbackUrl(flowPatchUrl);
+                                                 c.setState(state);
+                                                 return c;
+                                             })
+                                             .orElseGet(() -> {
+                                                 var c = SampleContext.ofFlow(flowId, flowPatchUrl, state);
+                                                 c.setLoginHint(loginHint);
+                                                 return c;
+                                             });
 
         contextRepository.save(ctx);
 
@@ -103,36 +103,37 @@ public class MobileAwareController {
     @PostMapping("/oidc-login-check")
     public ResponseEntity<?> handleMobileCheck(MobileCheckForm form) {
         SampleContext ctx = contextRepository.findByFlowId(form.getFlowId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "login flow not found"));
+                                             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                                     "login flow not found"));
 
         // let us know if this is a mobile flow so we can handle it appropriately
         ctx.setMobileFlow(form.isMobileFlow());
 
         // Step 1:
         // resolve login_hint to an IAM User or phone number
-        IdpUser user = idpUserResolver.findUserForContext(ctx).orElse(null);
+        IdpUser user = idpUserResolver.findUserForContext(ctx)
+                                      .orElse(null);
         if (user == null) {
             LOG.warn("failed to resolve user for flowId={} loginHint={}", ctx.getFlowId(), ctx.getLoginHint());
             oidcService.rejectFlow(ctx.getFlowId());
 
             // reject flow by sending to any oidcUrl
             String redirectUrl = UriComponentsBuilder.fromUriString(qrCodeUrl)
-                    .queryParam("flow_id", ctx.getFlowId())
-                    .encode()
-                    .build()
-                    .toString();
+                                                     .queryParam("flow_id", ctx.getFlowId())
+                                                     .encode()
+                                                     .build()
+                                                     .toString();
 
             LOG.info("redirecting to url={} ctx={}", redirectUrl, ctx);
             return ResponseEntity.status(HttpStatus.FOUND)
-                    .header("Location", redirectUrl)
-                    .build();
+                                 .header("Location", redirectUrl)
+                                 .build();
         }
 
         ctx.setUser(user);
 
         String phoneNumber = user.getPhoneNumber()
-                .orElseThrow();
+                                 .orElseThrow();
         ctx.setPhoneNumber(phoneNumber);
 
         LOG.info("found user id={} with phone={}", user.getId(), phoneNumber);
@@ -144,10 +145,10 @@ public class MobileAwareController {
         // consider PUSH more important than TOTP
         Comparator<Factor> byImportance = Comparator.comparingInt(this::getFactorImportance);
         Factor factor = factors.stream()
-                .filter(f -> "ACTIVE".equals(f.getStatus()))
-                .sorted(byImportance)
-                .findAny()
-                .orElse(null); // handled below
+                               .filter(f -> "ACTIVE".equals(f.getStatus()))
+                               .sorted(byImportance)
+                               .findAny()
+                               .orElse(null); // handled below
 
         // Step 3:
         // handle the verification factors
@@ -163,7 +164,7 @@ public class MobileAwareController {
     private ResponseEntity<?> handleAuthenticatorFactor(Factor factor, SampleContext ctx) {
         if ("TOTP".equals(factor.getType())) {
             LOG.info("handling TOTP factor factorId={} for userId={}", factor.getFactorId(), ctx.getUser()
-                    .getId());
+                                                                                                .getId());
             try {
                 String challengeId = authenticatorService.createTotpChallenge(factor.getFactorId());
                 ctx.setChallengeId(challengeId);
@@ -173,25 +174,25 @@ public class MobileAwareController {
             } catch (Exception e) {
                 LOG.error("failed to handle TOTP login flow for flowId={} factorId={} userId={}", ctx.getFlowId(),
                         factor.getFactorId(), ctx.getUser()
-                                .getId(),
+                                                 .getId(),
                         e);
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Error");
             }
 
             contextRepository.save(ctx);
             String redirectUrl = UriComponentsBuilder.fromHttpUrl(totpUrl)
-                    .queryParam("flow_id", ctx.getFlowId())
-                    .encode()
-                    .build()
-                    .toString();
+                                                     .queryParam("flow_id", ctx.getFlowId())
+                                                     .encode()
+                                                     .build()
+                                                     .toString();
 
             LOG.info("redirecting TOTP url={} ctx={}", redirectUrl, ctx);
             return ResponseEntity.status(HttpStatus.FOUND)
-                    .header("Location", redirectUrl)
-                    .build();
+                                 .header("Location", redirectUrl)
+                                 .build();
         } else if ("PUSH".equals(factor.getType())) {
             LOG.info("handling PUSH factor factorId={} for user_id={}", factor.getFactorId(), ctx.getUser()
-                    .getId());
+                                                                                                 .getId());
             try {
                 Check check = phoneCheckService.createCheckForPush(ctx.getPhoneNumber(), ctx.getFlowId());
                 ctx.setCheckId(check.getCheckId());
@@ -199,7 +200,7 @@ public class MobileAwareController {
 
                 String challengeId = authenticatorService.createPushChallenge(factor.getFactorId(), check.getCheckId(),
                         check.getCheckUrl(),
-                        "Please confirm you okta login");
+                        "Please confirm you auth0 login");
                 ctx.setChallengeId(challengeId);
                 ctx.setVerificationType(VerificationType.PUSH);
 
@@ -207,21 +208,21 @@ public class MobileAwareController {
             } catch (Exception e) {
                 LOG.error("failed to handle PUSH login flow for flowId={} factorId={} userId={}", ctx.getFlowId(),
                         factor.getFactorId(), ctx.getUser()
-                                .getId(),
+                                                 .getId(),
                         e);
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Error");
             }
 
             contextRepository.save(ctx);
             String redirectUrl = UriComponentsBuilder.fromHttpUrl(pushUrl)
-                    .queryParam("flow_id", ctx.getFlowId())
-                    .encode()
-                    .build()
-                    .toString();
+                                                     .queryParam("flow_id", ctx.getFlowId())
+                                                     .encode()
+                                                     .build()
+                                                     .toString();
             LOG.info("redirecting PUSH url={} ctx={}", redirectUrl, ctx);
             return ResponseEntity.status(HttpStatus.FOUND)
-                    .header("Location", redirectUrl)
-                    .build();
+                                 .header("Location", redirectUrl)
+                                 .build();
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported verification factor");
         }
@@ -237,7 +238,7 @@ public class MobileAwareController {
             oidcService.updateFlowForCheck(ctx.getFlowId(), ctx.getCheckUrl());
         } catch (Exception e) {
             LOG.error("failed to handle WEB login flow for flowId={} userId={}", ctx.getFlowId(), ctx.getUser()
-                    .getId(),
+                                                                                                     .getId(),
                     e);
             // FIXME this should fail the flow i.e. PATCH path=/user value=null
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Error");
@@ -248,15 +249,15 @@ public class MobileAwareController {
         // the end-user can then scan this QR code on the browser, in order to verify
         // their phone number
         String redirectUrl = UriComponentsBuilder.fromUriString(qrCodeUrl)
-                .queryParam("flow_id", ctx.getFlowId())
-                .encode()
-                .build()
-                .toString();
+                                                 .queryParam("flow_id", ctx.getFlowId())
+                                                 .encode()
+                                                 .build()
+                                                 .toString();
 
         LOG.info("redirecting to url={} ctx={}", redirectUrl, ctx);
         return ResponseEntity.status(HttpStatus.FOUND)
-                .header("Location", redirectUrl)
-                .build();
+                             .header("Location", redirectUrl)
+                             .build();
     }
 
     // Since this endpoint is public it's strongly recommended to verify if a

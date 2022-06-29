@@ -19,7 +19,7 @@ import id.tru.oidc.sample.service.authenticator.AuthenticatorService;
 import id.tru.oidc.sample.service.authenticator.Factor;
 
 @Controller
-@RequestMapping("/admin/factors")
+@RequestMapping("/bridge/admin/factors")
 public class FactorAdminController {
     @Autowired
     AuthenticatorService authenticatorService;

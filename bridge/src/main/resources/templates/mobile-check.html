@@ -13,7 +13,7 @@
 <body>
     <main>
         <h1>Checking your device...</h1>
-        <form id="mobile-check-form" action="#" th:action="@{/v2/oidc-login-check}" method="post">
+        <form id="mobile-check-form" action="#" th:action="@{/bridge/oidc-login-check}" method="post">
             <input type="hidden" id="mobile_flow" name="mobile_flow" value="false">
             <input type="hidden" id="flow_id" name="flow_id" th:value="${flow_id}">
         </form>
