@@ -1,9 +1,12 @@
 package id.tru.oidc.sample.dto;
 
+import java.util.Map;
+
 import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
@@ -14,10 +17,11 @@ public class LoginFlowCreate {
     private String loginHint;
     @NotBlank
     private String flowId;
-    @NotBlank
-    private String flowPatchUrl;
 
     private String state;
+
+    @JsonProperty("_links")
+    private Map<String, Object> links;
 
     public String getLoginHint() {
         return loginHint;
@@ -35,12 +39,24 @@ public class LoginFlowCreate {
         this.flowId = flowId;
     }
 
-    public String getFlowPatchUrl() {
-        return flowPatchUrl;
+    void setLinks(Map<String, Object> links) {
+        this.links = links;
     }
 
-    void setFlowPatchUrl(String flowPatchUrl) {
-        this.flowPatchUrl = flowPatchUrl;
+    public String getFlowPatchUrl() {
+        return (String) ((Map<String, Object>) links.get("self")).get("href");
+    }
+
+    public String getQrCodeDelegationUrl() {
+        return (String) ((Map<String, Object>) links.get("qr_code_delegation_url")).get("href");
+    }
+
+    public String getTOTPDelegationUrl() {
+        return (String) ((Map<String, Object>) links.get("totp_delegation_url")).get("href");
+    }
+
+    public String getPushDelegationUrl() {
+        return (String) ((Map<String, Object>) links.get("push_delegation_url")).get("href");
     }
 
     public String getState() {
@@ -53,8 +69,7 @@ public class LoginFlowCreate {
 
     @Override
     public String toString() {
-        return "LoginFlowCreate [flowId=" + flowId + ", flowPatchUrl=" + flowPatchUrl + ", loginHint=" + loginHint
-                + "state=" + state + "]";
+        return "LoginFlowCreate [flowId=" + flowId + ", loginHint=" + loginHint + "state=" + state + "]";
     }
 
 }
