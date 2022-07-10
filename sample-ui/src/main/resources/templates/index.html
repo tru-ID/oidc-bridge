@@ -1,0 +1,33 @@
+<!doctype html>
+<html th:replace="~{base :: layout(title=~{::title}, content=~{::div#content}, scripts=_)}" lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Sample UI - Home</title>
+  </head>
+  <body>
+    <div id="content">
+      <header class="container">
+        <div class="headings" style="text-align: center;">
+          <h1>OIDC Sample UI</h1>
+          <h2>This is a sample of tru.ID's SIM authentication features</h2>
+        </div>
+      </header>
+      <main class="container">
+        <h2>What's next?</h2>
+        <div class="grid">
+          <section>
+            <p><a href="#"><i data-feather="link-2"></i> Enable OIDC</a></p>
+            <p>Learn on how to enable OIDC on your project.</p>
+          </section>
+          <section>
+            <p><a href="#"><i data-feather="link-2"></i> Integrate with your IAM</a></p>
+            <p>Check out our technical guides on how to integrate with your favourite IAM.</p>
+          </section>
+          <section>
+            <p><a href="#"><i data-feather="link-2"></i> Try our Authenticator</a></p>
+            <p>You can enable our authenticator for logging in to this application.</p>
+          </section>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

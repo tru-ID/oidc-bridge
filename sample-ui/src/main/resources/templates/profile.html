@@ -1,0 +1,36 @@
+<!doctype html>
+<html th:replace="~{base :: layout(title=~{::title}, content=~{::div#content}, scripts=_)}" lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Sample UI - Profile</title>
+  </head>
+  <body>
+    <div id="content" class="container">
+      <main class="grid">
+        <section class="container">
+            <div class="grid profile-head">
+                <img th:src="@{/img/trudino.png}" alt="tru.ID logo" style="height: 60px; border-radius: 50%;"></img>
+                <h2 style="margin-bottom: 2rem;">User ID</h2>
+            </div>
+            <p>ID token:</p>
+            <pre style="padding: 1rem 0.5rem 0.25rem 1rem;">
+{
+    "prop1": 1,
+    "prop2": 2,
+}
+            </pre>
+        </section>
+        <section class="container">
+            <h2>Authenticator</h2>
+            <!-- <div style="display: flex; flex-wrap: wrap;  align-items: baseline; justify-content: space-around;">
+                <p>Enabled <i data-feather="lock"></i></p>
+                <a href="#" role="button" class="secondary">Remove</a>
+            </div> -->
+            <div style="display: flex; flex-wrap: wrap;  align-items: baseline; justify-content: space-around;">
+                <p>Disabled <i data-feather="unlock"></i></p>
+                <a href="#" role="button">Register</a>
+            </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

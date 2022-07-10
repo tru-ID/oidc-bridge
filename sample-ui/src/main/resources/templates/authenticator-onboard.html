@@ -1,0 +1,26 @@
+<!doctype html>
+<html th:replace="~{base :: layout(title=~{::title}, content=~{::div#content}, scripts=_)}" lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Sample UI - Authenticator Onboard</title>
+  </head>
+  <body>
+    <div id="content" class="container">
+      <main class="grid">
+        <section class="container">
+            <h1>Register Authenticator</h2>
+            <p>User ID: xxx</p>
+            <p>Phone Number: 07100000000</p>
+            <form action="#">
+                <input type="text" name="code" placeholder="TOTP code" aria-label="TOTP code" required />
+                <br/>
+                <button type="submit">Submit</button>
+            </form>
+        </section>
+        <section class="container qr-holder">
+            <code style="width: 220px; height: 220px;">TOTP goes here</code>
+            <p style="color: var(--muted-color);">scan this with your authenticator application</p>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
