@@ -8,18 +8,12 @@
       <main class="grid">
         <section class="container">
             <div class="grid profile-head">
-                <img th:src="@{/img/trudino.png}" alt="tru.ID logo" style="height: 60px; border-radius: 50%;"></img>
-                <h2 style="margin-bottom: 2rem;">User ID</h2>
+                <img th:src="${profileImageSource}" alt="tru.ID logo" style="height: 60px; border-radius: 50%;"></img>
+                <h2 style="margin-bottom: 2rem;" th:text=${username}></h2>
             </div>
             <p>ID token:</p>
             <pre>
-              <code>
-{
-    <b>"prop1"</b>: <i>1</i>,
-    <b>"prop1"</b>: <i>1</i>,
-    <b>"prop1"</b>: <i>1</i>,
-    <b>"prop1"</b>: <i>1</i>,
-}
+              <code th:text="${tokenClaims}">
               </code>
             </pre>
         </section>

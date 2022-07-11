@@ -1,23 +1,37 @@
 <!doctype html>
-<html th:fragment=layout(title,content,scripts) lang="en" xmlns:th="http://www.thymeleaf.org">
+<html th:fragment=layout(title,content,scripts) lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
+    <!-- <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css"> -->
+    <link rel="stylesheet" th:href="@{/sample-ui/assets/css/pico.min.css}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata:400,700%7CInter:300,regular,500,600,700" media="all">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/sample-ui/assets/css/style.css}">
+    <link rel="icon" type="image/x-icon" th:href="@{/sample-ui/assets/favicon.ico}">
     <script src="https://unpkg.com/feather-icons"></script>
     <title th:replace="${title}">Sample UI</title>
   </head>
   <body>
     <nav class="container-fluid">
       <ul>
-        <li><img th:src="@{/img/trudino.png}" alt="tru.ID logo" style="height: 60px;"></li>
+        <li><img th:src="@{/sample-ui/assets/img/trudino.png}" alt="tru.ID logo" style="height: 60px;"></li>
       </ul>
-      <ul>
+      <ul sec:authorize="isAuthenticated()">
         <li><a th:href="@{/sample-ui}">Home</a></li>
         <li><a th:href="@{/sample-ui/profile}">Profile</a></li>
-        <li><button>Logout</button></li>
+        <li>
+          <form th:action="@{/sample-ui/logout}" method="post" style="margin-bottom: 0;">
+            <button id="logout" type="submit" class="secondary">Logout</button>
+          </form>
+        </li>
+      </ul>
+      <ul sec:authorize="!isAuthenticated()">
+        <li><a th:href="@{/sample-ui}">Home</a></li>
+        <li>
+          <form th:action="@{/sample-ui/login/iam}" method="post" style="margin-bottom: 0;">
+            <button id="login" type="submit">Login</button>
+          </form>
+        </li>
       </ul>
     </nav>
     <div th:replace="${content}">
@@ -26,8 +40,10 @@
     <footer class="container-fluid" style="padding-top: 2rem; padding-bottom: 2rem;">
       <small>Sample project provided by <a href="https://tru.id">tru.ID</a></small>
     </footer>
-    <script th:replace="${scripts}" type="text/javascript">
+    <script type="text/javascript">
       feather.replace({class: 'icon'});
+    </script>
+    <script th:replace="${scripts}" type="text/javascript">
     </script>
   </body>
 </html>

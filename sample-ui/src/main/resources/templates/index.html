@@ -1,5 +1,5 @@
 <!doctype html>
-<html th:replace="~{base :: layout(title=~{::title}, content=~{::div#content}, scripts=_)}" lang="en" xmlns:th="http://www.thymeleaf.org">
+<html th:replace="~{base :: layout(title=~{::title}, content=~{::div#content}, scripts=~{::script#magic})}" lang="en" xmlns:th="http://www.thymeleaf.org">
   <head>
     <title>Sample UI - Home</title>
   </head>
@@ -29,5 +29,8 @@
         </div>
       </main>
     </div>
+    <script id="magic" type="text/javascript">
+      const helloWorld = () => {console.log("Hello World")};
+    </script>
   </body>
 </html>
