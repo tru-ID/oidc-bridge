@@ -18,6 +18,9 @@ public class SecurityConfig {
     @Value("${tru.id.cors.allowed-origins}")
     private String[] allowedOrigins;
 
+    @Value("${tru.id.iam.logout-success-url}")
+    private String logoutSuccessUrl;
+
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeRequests()
@@ -33,9 +36,10 @@ public class SecurityConfig {
         http.logout()
             .invalidateHttpSession(true)
             .logoutUrl("/sample-ui/logout")
-            .logoutSuccessUrl("/sample-ui");
+            .logoutSuccessUrl(logoutSuccessUrl);
 
         http.oauth2Login(oauth2 -> oauth2.loginPage("/sample-ui/login/iam")
+                                         .defaultSuccessUrl("/sample-ui")
                                          .authorizationEndpoint()
                                          .baseUri("/sample-ui/login")
                                          .and()

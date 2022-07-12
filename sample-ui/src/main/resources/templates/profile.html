@@ -19,11 +19,11 @@
         </section>
         <section class="container">
             <h2>Authenticator</h2>
-            <!-- <div style="display: flex; flex-wrap: wrap;  align-items: baseline; justify-content: space-around;">
+            <div th:if="${!factors.isEmpty()}" style="display: flex; flex-wrap: wrap;  align-items: baseline; justify-content: space-around;">
                 <p>Enabled <i data-feather="lock"></i></p>
                 <a href="#" role="button" class="secondary">Remove</a>
-            </div> -->
-            <div style="display: flex; flex-wrap: wrap;  align-items: baseline; justify-content: space-around;">
+            </div>
+            <div th:if="${factors.isEmpty()}" style="display: flex; flex-wrap: wrap;  align-items: baseline; justify-content: space-around;">
                 <p>Disabled <i data-feather="unlock"></i></p>
                 <a href="#" role="button">Register</a>
             </div>
