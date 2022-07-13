@@ -9,9 +9,9 @@ services:
   sample-ui:
     image: tru.id/sample-ui:local
     env_file:
-      - .env.prod2
+      - ${OIDC_CONFIG_FILE}
 
   oidc-bridge:
     image: tru.id/oidc-bridge:local
     env_file:
-      - .env.prod2
+      - ${OIDC_CONFIG_FILE}

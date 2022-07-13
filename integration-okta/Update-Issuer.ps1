@@ -30,7 +30,7 @@ Write-Debug (ConvertTo-Json -Depth 5 $Configuration)
 $Configuration.authenticator = @{ 
     issuer_name = "luis-cool-issuer"
     challenge_default_message = "Please confirm your Okta login" 
-    challenge_callback_url = "$NgrokTargetUri/challenge/callback"
+    challenge_callback_url = "$NgrokTargetUri/bridge/challenge/callback"
 }
 
 Write-Debug "New config:"

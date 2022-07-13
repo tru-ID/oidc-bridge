@@ -7,10 +7,11 @@
     <div id="content" class="container">
       <main class="grid">
         <section class="container">
-            <div class="grid profile-head">
+            <div th:if="${profileImageSource != null}" class="grid profile-head">
                 <img th:src="${profileImageSource}" alt="tru.ID logo" style="height: 60px; border-radius: 50%;"></img>
                 <h2 style="margin-bottom: 2rem;" th:text=${username}></h2>
             </div>
+            <h2 th:if="${profileImageSource == null}" style="margin-bottom: 2rem;" th:text=${username}></h2>
             <p>ID token:</p>
             <pre>
               <code th:text="${tokenClaims}">
