@@ -73,7 +73,6 @@ public class HomeController {
         return mv;
     }
 
-
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     static class PublicFactor {
         String factorId;

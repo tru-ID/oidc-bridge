@@ -40,7 +40,7 @@ public class AuthenticatorController {
 
         RegistrationIntent ri = restTemplate.postForObject(uri, null, RegistrationIntent.class);
 
-        LOG.info("Onboarding user {} with phone number {}", ri.userId, ri.phoneNumber);
+        LOG.info("Onboarding authenticator for user {} with phone number {}", ri.userId, ri.phoneNumber);
 
         ModelAndView mv = new ModelAndView("authenticator-onboard");
         mv.addObject("registration", ri);
@@ -61,6 +61,21 @@ public class AuthenticatorController {
                 totpSubmitForm.getFactorId(), userId);
 
         restTemplate.postForObject(uri, body, Void.class);
+
+        return "redirect:/sample-ui/profile";
+    }
+
+    @PostMapping("/remove")
+    String authenticatorRemove(@AuthenticationPrincipal OAuth2User oAuth2User) {
+        String userId = oAuth2User.getName();
+
+        URI uri = UriComponentsBuilder.fromUriString(bridgeApiBaseUrl)
+                                      .pathSegment("user", "{userId}", "factors", "disable")
+                                      .build(userId);
+
+        LOG.info("Disabling authenticator for user {}", userId);
+
+        restTemplate.postForObject(uri, null, Void.class);
 
         return "redirect:/sample-ui/profile";
     }

@@ -37,7 +37,7 @@ public class ApiController {
     private AuthenticatorService authenticatorService;
 
     @GetMapping("/user/{id}/factors")
-    public List<PublicFactor> factorForUserId(@PathVariable("id") String userId) {
+    public List<PublicFactor> allFactors(@PathVariable("id") String userId) {
         return authenticatorService.findFactorsByUserId(userId)
                                    .stream()
                                    .map(PublicFactor::ofFactor)
@@ -45,7 +45,7 @@ public class ApiController {
     }
 
     @PostMapping("/user/{id}/factors")
-    public RegistrationIntent createFactorForUserId(@PathVariable("id") String userId) {
+    public RegistrationIntent createFactor(@PathVariable("id") String userId) {
         String phoneNumber = userResolver.findUserById(userId)
                                          .flatMap(IdpUser::getPhoneNumber)
                                          .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -65,6 +65,21 @@ public class ApiController {
 
         LOG.info("Enabling factor {} with code {}", factor, enableFactor.getCode());
         authenticatorService.enableFactor(factor, enableFactor.getCode());
+    }
+
+    @PostMapping("/user/{id}/factors/disable")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void disableFactors(@PathVariable("id") String userId) {
+        List<Factor> activeFactors = authenticatorService.findFactorsByUserId(userId)
+                                                         .stream()
+                                                         .filter(f -> f.getStatus()
+                                                                       .equals("ACTIVE"))
+                                                         .collect(Collectors.toList());
+
+        for (Factor f : activeFactors) {
+            LOG.info("Disabling factor {} for user {}", f, userId);
+            authenticatorService.disableFactor(f);
+        }
     }
 
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
