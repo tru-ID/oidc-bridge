@@ -8,16 +8,17 @@
       <main class="grid">
         <section class="container">
             <h1>Register Authenticator</h2>
-            <p>User ID: xxx</p>
-            <p>Phone Number: 07100000000</p>
-            <form action="#">
+            <p>User ID: <span th:text="${registration.userId}"></span></p>
+            <p>Phone Number: <span th:text="${registration.phoneNumber}"></span></p>
+            <form th:action="@{/sample-ui/authenticator/onboard/submit}" method="post">
                 <input type="text" name="code" placeholder="TOTP code" aria-label="TOTP code" required />
                 <br/>
+                <input type="hidden" name="factor_id" th:value="${registration.factorId}"/>
                 <button type="submit">Submit</button>
             </form>
         </section>
         <section class="container qr-holder">
-            <code style="width: 220px; height: 220px;">TOTP goes here</code>
+            <img th:src="${registration.dataUrl}" style="width: 220px; height: 220px;" alt="onboarding qr code">
             <p style="color: var(--muted-color); text-align: center;">scan this with your authenticator application</p>
         </section>
       </main>

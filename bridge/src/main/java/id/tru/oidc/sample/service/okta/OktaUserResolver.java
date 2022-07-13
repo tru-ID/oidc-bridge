@@ -37,6 +37,11 @@ public class OktaUserResolver implements IdpUserResolver {
         return findUser(loginHint);
     }
 
+    @Override
+    public Optional<IdpUser> findUserById(String userId) {
+        throw new UnsupportedOperationException("not implemented for Okta");
+    }
+
     private Optional<IdpUser> findUser(String email) {
         String baseUri = "https://" + oktaDomain + "/api/v1/users";
         String filter = "profile.email eq \"" + email + "\"";

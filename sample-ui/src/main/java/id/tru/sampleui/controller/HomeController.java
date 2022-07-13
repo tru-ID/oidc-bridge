@@ -73,10 +73,6 @@ public class HomeController {
         return mv;
     }
 
-    @GetMapping("/authenticator/onboard")
-    String authenticatorOnboard() {
-        return "authenticator-onboard";
-    }
 
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     static class PublicFactor {

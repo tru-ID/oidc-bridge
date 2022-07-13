@@ -25,7 +25,9 @@
             </div>
             <div th:if="${factors.isEmpty()}" style="display: flex; flex-wrap: wrap;  align-items: baseline; justify-content: space-around;">
                 <p>Disabled <i data-feather="unlock"></i></p>
-                <a href="#" role="button">Register</a>
+                <form th:action="@{/sample-ui/authenticator/onboard}" method="post" style="margin-bottom: 0;">
+                  <button id="register" type="submit">Register</button>
+                </form>
             </div>
         </section>
       </main>
