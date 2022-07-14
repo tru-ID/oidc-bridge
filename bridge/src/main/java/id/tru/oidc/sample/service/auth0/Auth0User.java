@@ -4,7 +4,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.springframework.security.oauth2.client.web.server.UnAuthenticatedServerOAuth2AuthorizedClientRepository;
 import org.springframework.util.StringUtils;
 
 import id.tru.oidc.sample.service.context.user.IdpUser;

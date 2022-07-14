@@ -4,14 +4,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager;
-import org.springframework.security.oauth2.client.InMemoryOAuth2AuthorizedClientService;
-import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
-import org.springframework.security.oauth2.client.registration.ClientRegistration;
-import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
-import org.springframework.security.oauth2.core.AuthorizationGrantType;
-import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.web.client.RestTemplate;
 
 import id.tru.oidc.sample.service.IdpUserResolver;
