@@ -1,0 +1,39 @@
+<!doctype html>
+<html th:replace="~{base :: layout(title=~{::title}, content=~{::div#content}, scripts=_)}" lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Sample UI - Profile</title>
+  </head>
+  <body>
+    <div id="content" class="container">
+      <main class="grid">
+        <section class="container">
+            <div th:if="${profileImageSource != null}" class="grid profile-head">
+                <img th:src="${profileImageSource}" alt="tru.ID logo" style="height: 60px; border-radius: 50%;"></img>
+                <h2 style="margin-bottom: 2rem;" th:text=${username}></h2>
+            </div>
+            <h2 th:if="${profileImageSource == null}" style="margin-bottom: 2rem;" th:text=${username}></h2>
+            <p>ID token:</p>
+            <pre>
+              <code th:text="${tokenClaims}">
+              </code>
+            </pre>
+        </section>
+        <section class="container">
+            <h2>Authenticator</h2>
+            <div th:if="${!factors.isEmpty()}" style="display: flex; flex-wrap: wrap;  align-items: baseline; justify-content: space-around;">
+                <p>Enabled <i data-feather="lock"></i></p>
+                <form th:action="@{/sample-ui/authenticator/remove}" method="post" style="margin-bottom: 0;">
+                  <button id="remove" type="submit" class="secondary">Remove</button>
+                </form>
+            </div>
+            <div th:if="${factors.isEmpty()}" style="display: flex; flex-wrap: wrap;  align-items: baseline; justify-content: space-around;">
+                <p>Disabled <i data-feather="unlock"></i></p>
+                <form th:action="@{/sample-ui/authenticator/onboard}" method="post" style="margin-bottom: 0;">
+                  <button id="register" type="submit">Register</button>
+                </form>
+            </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

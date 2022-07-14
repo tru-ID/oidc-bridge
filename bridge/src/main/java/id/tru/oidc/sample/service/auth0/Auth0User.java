@@ -27,6 +27,21 @@ public class Auth0User implements IdpUser {
         return new Auth0User(userId, phoneNumber);
     }
 
+    public static Auth0User ofApiUser(Auth0ApiUser user) {
+        Objects.requireNonNull(user, "user cannot be null");
+
+        String userId = user.getUserId();
+        String phoneNumber = user.getPhoneNumber();
+
+        if (!StringUtils.hasLength(userId)) {
+            throw new IllegalArgumentException("userId cannot be blank");
+        }
+        if (!StringUtils.hasLength(phoneNumber)) {
+            throw new IllegalArgumentException("phone_number cannot be blank");
+        }
+        return new Auth0User(userId, phoneNumber);
+    }
+
     private Auth0User(String userId, String phoneNumber) {
         this.userId = userId;
         this.phoneNumber = phoneNumber;

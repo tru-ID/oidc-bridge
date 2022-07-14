@@ -37,6 +37,28 @@ public class OktaUserResolver implements IdpUserResolver {
         return findUser(loginHint);
     }
 
+    @Override
+    public Optional<IdpUser> findUserById(String userId) {
+        String baseUri = "https://" + oktaDomain + "/api/v1/users";
+        String requestUri = UriComponentsBuilder.fromUriString(baseUri)
+                                                .pathSegment("{id}")
+                                                .build(userId)
+                                                .toString();
+
+        OktaUserResult result = null;
+        try {
+            result = oktaApiClient.getForObject(requestUri, OktaUserResult.class);
+        } catch (RestClientException e) {
+            LOG.error("failed to find Okta user for id={}", userId, e);
+            return Optional.empty();
+        }
+
+        OktaUser user = result.getProfile();
+        user.setId(userId);
+
+        return Optional.of(user);
+    }
+
     private Optional<IdpUser> findUser(String email) {
         String baseUri = "https://" + oktaDomain + "/api/v1/users";
         String filter = "profile.email eq \"" + email + "\"";

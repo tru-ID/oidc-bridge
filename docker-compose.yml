@@ -6,10 +6,12 @@ services:
     ports:
       - "8080:80"
 
-  auth0-sample:
-    image: auth0-sample:local
+  sample-ui:
+    image: tru.id/sample-ui:local
+    env_file:
+      - ${OIDC_CONFIG_FILE}
 
   oidc-bridge:
     image: tru.id/oidc-bridge:local
     env_file:
-      - .env.prod
+      - ${OIDC_CONFIG_FILE}

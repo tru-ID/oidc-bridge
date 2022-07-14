@@ -1,0 +1,57 @@
+:root {
+    --font-family: "Inter", sans-serif;
+}
+
+:root:not([data-theme=dark]), [data-theme=light] {
+    --color: #40406a;
+    --muted-color: #8c8ca5;
+    --primary: #1955ff;
+    --primary-hover: #3898ec;
+    --primary-focus: #3898ec29;
+    /* custom vars i.e. not on pico css */
+    --secondary-bg: #fafafa;
+    --header-color: #0d0c54;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    --color: var(--header-color);
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+nav {
+    background-color: var(--secondary-bg);
+    box-shadow: 0px 8px 11px -7px rgba(0,0,0,0.1);
+}
+
+footer {
+    margin-top: auto; 
+    text-align: center; 
+    background-color: var(--secondary-bg);
+    box-shadow: 0px -8px 11px -7px rgba(0,0,0,0.1);
+}
+
+body>div>header, body>div>main {
+    padding: calc(var(--spacing) * 4) 0;
+}
+
+@media(min-width: 992px) {
+    .profile-head {
+        grid-template-columns: 15% auto;
+    }
+}
+
+.icon {
+    vertical-align: sub;
+}
+
+.qr-holder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}

@@ -35,4 +35,10 @@ public class Factor {
     public String getDataUrl() {
         return dataUrl;
     }
+
+    @Override
+    public String toString() {
+        return "Factor[factorId=" + factorId + ", type=" + type + ", status=" + status + ", externalUserId="
+                + externalUserId + "]";
+    }
 }
