@@ -18,6 +18,7 @@ import id.tru.oidc.sample.service.IdpUserResolver;
 import id.tru.oidc.sample.service.auth0.Auth0UserResolver;
 import id.tru.oidc.sample.service.gluu.GluuUserResolver;
 import id.tru.oidc.sample.service.okta.OktaUserResolver;
+import id.tru.oidc.sample.service.pingid.PingIdUserResolver;
 
 @Configuration
 public class IdpUserResolverConfig {
@@ -117,12 +118,15 @@ public class IdpUserResolverConfig {
             return new OktaUserResolver(oktaDomain, oktaApiClient());
         case GLUU:
             return new GluuUserResolver(gluuBaseUrl, gluuClient());
+        case PING_ID:
+            // FIXME this is not really using the pingID directory
+            return new PingIdUserResolver();
         default:
             throw new IllegalStateException("unknown resolver type: " + resolverType);
         }
     }
 
     enum ResolverType {
-        AUTH0, OKTA, GLUU
+        AUTH0, OKTA, GLUU, PING_ID
     }
 }
