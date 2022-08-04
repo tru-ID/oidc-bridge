@@ -58,7 +58,7 @@ cp ./integration-okta/.example.env .env
 vi .env
 ```
 
- You can find some IAM specific instruction:
+For more IAM specific instructions:
 
 * [Auth0](./integration-auth0/README.md)
 * [Okta](./integration-okta/README.md)
