@@ -64,6 +64,7 @@
                         <image>tru.id/sample-ui</image>
                     </to>
                     <container>
+                        <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
                         <ports>
                             <port>8080</port>
                         </ports>
