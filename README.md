@@ -5,7 +5,7 @@ This repository contains two applications:
 * `bridge` - handles tru.ID OIDC flows
 * `sample-ui` - UI that showcases a tru.ID OIDC login
 
-You can learn more about tru.ID OIDC Flows by [reading this guide](#).
+You can learn more about tru.ID OIDC Flows by [reading this guide](https://developer.tru.id/docs/oidc/integration).
 
 
 ## Running the examples
@@ -13,6 +13,7 @@ You can learn more about tru.ID OIDC Flows by [reading this guide](#).
 Pre-requisites:
 
 * IAM account (auth0, okta, etc.)
+* tru.ID project configured for using the OIDC API ([see more](./bridge/README.md#pre-requisites))
 * [ngrok](https://ngrok.com/)
 * Docker
 * JDK 11 or higher

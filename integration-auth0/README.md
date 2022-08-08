@@ -4,7 +4,7 @@ tru.ID leverages [Auth0 Actions](https://auth0.com/docs/customize/actions) to pr
 
 The first factor will be the Auth0 login experience (either using SSO or username/password).
 
-The second factor will be controlled by our OIDC bridge ([more info](./bridge/README.md)).
+The second factor will be controlled by our OIDC bridge ([more info](../bridge/README.md)).
 
 ## Pre-Requisites
 
