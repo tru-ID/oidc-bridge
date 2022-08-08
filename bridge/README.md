@@ -9,7 +9,7 @@ The current default verification rules are:
 * Use TOTP, if the IAM user has onboarded another mobile authenticator
 * Otherwise, use PhoneCheck to verify the IAM User phone number
 
-To learn more how you can build your own bridge, check the [integration guide](https://developer.tru.qa/docs/oidc/integration).
+To learn more how you can build your own bridge, check the [integration guide](https://developer.tru.id/docs/oidc/integration).
 
 ## Pre-requisites
 
