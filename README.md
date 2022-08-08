@@ -5,7 +5,7 @@ This repository contains two applications:
 * `bridge` - handles tru.ID OIDC flows
 * `sample-ui` - UI that showcases a tru.ID OIDC login
 
-You can learn more about tru.ID OIDC Flows by [reading this guide](#).
+You can learn more about tru.ID OIDC Flows by [reading this guide](https://developer.tru.id/docs/oidc/integration).
 
 
 ## Running the examples
