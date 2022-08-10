@@ -2,46 +2,68 @@
 
 tru.ID leverages Okta 3rd party identity providers to provide a passwordless login experience.
 
-
-
 The second factor will be controlled by our OIDC bridge ([more info](./bridge/README.md)).
 
 ## Pre-Requisites
 
-* An Okta tenant
-* An OIDC identity provider pointing to tru.ID
-* An Application to initiate Okta logins through the `sample-ui`
+* tru.ID developer account ([sign up](https://tru.id/signup))
+* OIDC Bridge application to control the verification flow ([more info](https://github.com/tru-ID/oidc-bridge))
+* Okta tenant
 
 ## Configuration
 
 The [.example.env](./.example.env) file contains all the environment variables necessary to run a
 full (`sample-ui`+`bridge`+`okta`) flow and how to populate them.
 
-## Create the tru.ID Identity Provider
+### Create a tru.ID project that supports OIDC
 
-Create a [enterprise OIDC identity provider](https://developer.okta.com/docs/guides/add-an-external-idp/openidconnect/main/)
-with the following configuration:
+- Sign in to [https://developer.tru.id/](https://developer.tru.id/)
+- Go to **Console > Projects > Add Project**
+- Give the project a name and click **Create Project**
+- Fill in the **OIDC** section with ([see an example](../bridge/README.md)):
+    - OIDC bridge application public URL
+    - URL called after the bridge has handled the verification e.g. your app, etc.
+- Create **Authorization Code** credentials by clicking the **Generate New** button
+- Copy the `client_id` and the `client_secret` so you can use them in the next step.
 
-* Client ID and Client Secret - same as tru.ID OIDC client credentials, created through your tru.ID project
-* Endpoints:
-    * Issuer - https://eu.api.tru.id/
-    * Authorization Endpoint - https://eu.api.tru.id/oauth2/v1/auth
-    * Token Endpoint - https://eu.api.tru.id/oauth2/v1/token
-    * JWKS Endpoint - https://eu.api.tru.id/oidc/.well-known/jwks.json
-* Authentication Settings:
-    * IdP Username - `idpuser.externalId`
-    * Match Against - `Okta Username`
+### Configure new Identity Provider in your Okta tenant
 
-Once you've created the identity provider, capture it's IdP ID since it's necessary in for the `sample-ui` configuration.
+- Sign in to your Okta tenant
+- Go to **Security > Identity Providers > Add Identity Provider**
+- Select **OpenID Connect IdP**
+- In the **General Setting** section, fill in the **Name** with [**tru.ID](http://tru.ID) OIDC**
+- In the **Client Details** section, fill in the **Client ID** and **Client Secret** with the values obtained from the previous step
+- In the **Endpoints** section fill in the following values:
+    - **Issuer:** https://eu.api.tru.id/
+    - **Authorization endpoint:** [https://eu.api.tru.id/oauth2/v1/auth](https://eu.api.tru.id/oauth2/v1/auth)
+    - **Token endpoint:** [https://eu.api.tru.id/oauth2/v1/token](https://eu.api.tru.id/oauth2/v1/token)
+    - **JWKS endpoint:** [https://eu.api.tru.id/oidc/.well-known/jwks.json](https://eu.api.tru.id/oidc/.well-known/jwks.json)
+- In the **Authentication Settings** section:
+    - Change the **IdP Username** value to `idpuser.externalId`
+    - Change the **If no match is found** value to **Redirect to Okta sign-in page**
 
-## Create an OIDC Application to try the flow through the `sample-ui`
+Once you've created the identity provider, capture its IdP ID since it is necessary for the `sample-ui` configuration.
+### Configure new Application to run a full test flow
 
-The `sample-ui` project in this repository showcases an OIDC login using the IAM provider as the identity provider.
+- Go to **Applications > Applications > Create App Integration**
+- For **Sign-in method** choose the **OIDC - OpenID Connect**
+- For **Application type** choose **Web Application**
+- On the **General Settings > Sign-in redirect URIs** section add our sample UI public redirect URL
+    - e.g. `<ngrok-endpoint>/sample-ui/login/callback/iam`
+- On the **General Settings> Sign-out redirect URIs** section add our sample UI public sign out redirect URL
+    - e.g. `<ngrok-endpoint>/sample-ui`
+- On **Assignments > Controlled access** choose **Skip group assignment for now**
+- Copy the **Client ID** and the **Secret** so you can provide them to our `sample-ui` configuration
 
-Create an [Application in your Okta tenant](https://help.okta.com/en-us/Content/Topics/Apps/Apps_App_Integration_Wizard_OIDC.htm) 
-with the following configuration:
+### Create a new user to test the integration
 
-* Sign-in redirect URIs - `<ngrok-endpoint>/sample-ui/login/callback/iam`
-* Sign-out redirect URIs - `<ngrok-endpoint>/sample-ui`
+- Go to **Directory > People > Add Person**
+- Fill in the required fields
+- Add a phone number to the newly created user by:
+    - Click on the user
+    - Go to **Profile > Edit**
+    - Fill in the **Primary phone** field with a valid phone number
 
-Afterwards, you should fill in the `sample-ui` configuration section in the [.example.env](./.example.env) file.
+## Notes
+
+- Any questions, visit [https://support.tru.id/](https://support.tru.id/)
