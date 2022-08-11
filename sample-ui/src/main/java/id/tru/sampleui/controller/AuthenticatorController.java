@@ -108,6 +108,7 @@ public class AuthenticatorController {
         private String code;
         private String factorId;
 
+        @SuppressWarnings("unused")
         public TotpSubmitForm(String code, String factor_id) {
             this.code = code;
             this.factorId = factor_id;

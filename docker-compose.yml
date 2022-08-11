@@ -10,10 +10,14 @@ services:
     image: tru.id/sample-ui:local
     env_file:
       - ${OIDC_CONFIG_FILE}
-      - JAVA_TOOL_OPTIONS=-Xms128m -Xmx256
+    # uncomment if you are running gluu example and need to load a trust store
+    volumes:
+      - ./integration-gluu/:/opt/truid
 
   oidc-bridge:
     image: tru.id/oidc-bridge:local
     env_file:
       - ${OIDC_CONFIG_FILE}
-      - JAVA_TOOL_OPTIONS=-Xms128m -Xmx256
+    # uncomment if you are running gluu example and need to load a trust store
+    volumes:
+      - ./integration-gluu/:/opt/truid
