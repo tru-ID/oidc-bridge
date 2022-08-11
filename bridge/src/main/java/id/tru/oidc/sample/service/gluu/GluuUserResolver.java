@@ -30,7 +30,23 @@ public class GluuUserResolver implements IdpUserResolver {
 
     @Override
     public Optional<IdpUser> findUserById(String userId) {
-        throw new UnsupportedOperationException("Not implemented!");
+        String baseUri = gluuBaseUrl + "/identity/restv1/scim/v2/Users/{id}";
+
+        String requestUri = UriComponentsBuilder.fromUriString(baseUri)
+                                                .build(userId)
+                                                .toString();
+
+        GluuScimUser user;
+        try {
+            ResponseEntity<GluuScimUser> response = gluuClient.exchange(requestUri, HttpMethod.GET, null,
+                    GluuScimUser.class);
+            user = response.getBody();
+        } catch (RestClientException e) {
+            LOG.error("failed to find Gluu user for user_id={}", userId, e);
+            return Optional.empty();
+        }
+
+        return Optional.of(GluuUser.ofScimUser(user));
     }
 
     @Override

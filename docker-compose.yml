@@ -10,8 +10,10 @@ services:
     image: tru.id/sample-ui:local
     env_file:
       - ${OIDC_CONFIG_FILE}
+      - JAVA_TOOL_OPTIONS=-Xms128m -Xmx256
 
   oidc-bridge:
     image: tru.id/oidc-bridge:local
     env_file:
       - ${OIDC_CONFIG_FILE}
+      - JAVA_TOOL_OPTIONS=-Xms128m -Xmx256

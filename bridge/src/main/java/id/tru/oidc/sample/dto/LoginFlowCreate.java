@@ -43,18 +43,22 @@ public class LoginFlowCreate {
         this.links = links;
     }
 
+    @SuppressWarnings("unchecked")
     public String getFlowPatchUrl() {
         return (String) ((Map<String, Object>) links.get("self")).get("href");
     }
 
+    @SuppressWarnings("unchecked")
     public String getQrCodeDelegationUrl() {
         return (String) ((Map<String, Object>) links.get("qr_code_delegation_url")).get("href");
     }
 
+    @SuppressWarnings("unchecked")
     public String getTOTPDelegationUrl() {
         return (String) ((Map<String, Object>) links.get("totp_delegation_url")).get("href");
     }
 
+    @SuppressWarnings("unchecked")
     public String getPushDelegationUrl() {
         return (String) ((Map<String, Object>) links.get("push_delegation_url")).get("href");
     }

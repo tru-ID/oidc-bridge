@@ -47,7 +47,7 @@ public class FactorAdminController {
                                                     "cannot enable non-existing factor"));
         authenticatorService.enableFactor(factor, form.getCode());
 
-        return "redirect:/admin/factors";
+        return "redirect:/bridge/admin/factors";
     }
 
     @PostMapping(path = "/{id}/disable")
@@ -57,7 +57,7 @@ public class FactorAdminController {
                                                     "cannot disable non-existing factor"));
         authenticatorService.disableFactor(factor);
 
-        return "redirect:/admin/factors";
+        return "redirect:/bridge/admin/factors";
     }
 
     private static class FactorCreateForm {
