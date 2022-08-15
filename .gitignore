@@ -50,3 +50,5 @@ bin/
 
 .DS_Store
 
+# trust store files
+*.jks

@@ -10,8 +10,16 @@ services:
     image: tru.id/sample-ui:local
     env_file:
       - ${OIDC_CONFIG_FILE}
+    # uncomment if you are running gluu example and need to load a trust store
+    # make sure you have the 'javaTrustStore.jks' file in the ./integration-gluu folder
+    # volumes:
+    #   - ./integration-gluu/:/opt/truid
 
   oidc-bridge:
     image: tru.id/oidc-bridge:local
     env_file:
       - ${OIDC_CONFIG_FILE}
+    # uncomment if you are running gluu example and need to load a trust store
+    # make sure you have the 'javaTrustStore.jks' file in the ./integration-gluu folder
+    # volumes:
+    #   - ./integration-gluu/:/opt/truid

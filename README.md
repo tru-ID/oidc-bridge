@@ -24,10 +24,10 @@ There's a [compose file](./docker-compose.yml) which runs both the bridge, ui an
 
 ```shell
 # build the bridge image
-./mvnw -P bridge clean package jib:dockerBuild "-Djib.to.tags=local"
+./mvnw -pl bridge clean package jib:dockerBuild "-Djib.to.tags=local"
 
 # build the sample-ui image
-./mvnw -P sample-ui clean package jib:dockerBuild "-Djib.to.tags=local"
+./mvnw -pl sample-ui clean package jib:dockerBuild "-Djib.to.tags=local"
 
 # you should see both images available locally
 docker images tru.id/*
@@ -63,6 +63,7 @@ For more IAM specific instructions:
 
 * [Auth0](./integration-auth0/README.md)
 * [Okta](./integration-okta/README.md)
+* [Gluu](./integration-gluu/README.md)
 
 4. Run the compose file with that configuration
 
