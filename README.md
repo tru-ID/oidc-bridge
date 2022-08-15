@@ -63,6 +63,7 @@ For more IAM specific instructions:
 
 * [Auth0](./integration-auth0/README.md)
 * [Okta](./integration-okta/README.md)
+* [Gluu](./integration-gluu/README.md)
 
 4. Run the compose file with that configuration
 
