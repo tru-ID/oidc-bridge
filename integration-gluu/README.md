@@ -24,8 +24,8 @@ full (`sample-ui`+`bridge`+`gluu`) flow and how to populate them.
 - Go to **Console > Projects > Add Project**
 - Give the project a name and click **Create Project**
 - Fill in the **OIDC** section with ([see an example](../bridge/README.md)):
-    - OIDC bridge application public URL
-    - URL called after the bridge has handled the verification e.g. your app, etc.
+    - OIDC bridge application public URL e.g. `https://<ngrok-base-url>/bridge/oidc-login`
+    - The Person Authentication script callback url e.g. `https://<gluu-installion-base-url>/oxauth/postlogin.htm`
 - Create **Authorization Code** credentials by clicking the **Generate New** button
 - Copy the `client_id` and the `client_secret` so you can use them in the next step.
 
