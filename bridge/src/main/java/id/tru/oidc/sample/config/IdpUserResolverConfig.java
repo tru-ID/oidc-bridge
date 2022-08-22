@@ -53,7 +53,7 @@ public class IdpUserResolverConfig {
                                        .clientAuthenticationMethod(
                                                ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
                                        .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                                       .scope("")
+                                       .scope("https://gluu.org/scim/users.read")
                                        .tokenUri(gluuBaseUrl + "/oxauth/restv1/token")
                                        .build();
 
