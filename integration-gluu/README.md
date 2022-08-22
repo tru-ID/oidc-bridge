@@ -67,12 +67,19 @@ You'll need this so the `sample-ui` can use it as an IdP
 - Go to **OpenID Connect > Clients > Add Client**
 - Click **Generate Client Secret**
 - Fill in the **Client Name** with `tru.ID SCIM Client`
-- Set **Application Type** to `Web`
+- Set **Application Type** to `Native`
 - Set **Authentication method for the Token Endpoint** to `client_secret_basic`
 - Set **Grant Types** to `client_credentials`
 - Add `https://gluu.org/scim/users.read ` to the **Scopes**
 - Copy the `client_id` and `client_secret` and set the `SAMPLE_GLUU_SCIM_CLIENT_ID` and
   `SAMPLE_GLUU_SCIM_CLIENT_SECRET` variables in your `.env` file
+
+# Expose Home Telephone Number as a SCIM attribute
+
+- Go to **Configuration > Attributes** and search for `home`
+- Click `Home Telephone Number`
+- Enable the **Include in SCIM extension**
+- Press **Update**
 
 ## Create a new user to test the integration
 
