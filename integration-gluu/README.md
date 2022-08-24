@@ -7,6 +7,10 @@ The first factor uses Gluu's username/password login mechanism.
 
 The second factor will be controlled by our OIDC bridge ([more info](../bridge/README.md)).
 
+Here is a diagram of the interactions:
+
+![gluu tru.ID authentication workflow](gluu-truid-authentication-flow.png)
+
 ## Pre-Requisites
 
 - Gluu installation ([docker compose example](https://gluu.org/docs/gluu-server/4.4/installation-guide/install-docker/))

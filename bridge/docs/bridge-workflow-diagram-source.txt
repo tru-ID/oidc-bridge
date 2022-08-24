@@ -1,0 +1,52 @@
+title OIDC Bridge interactions
+
+participant "End User" as end_user
+participant "Your\nApplication" as customer_login
+participant "tru.ID" as OIDC_Service
+participant "OIDC Bridge" as customer_server
+participant "IAM Directory" as iam_provider
+
+note over end_user, iam_provider: Handling OIDC callback
+end_user -> customer_login: Login to protected application
+customer_login-->end_user: Redirect to tru.ID auth url
+group tru.ID <-> Bridge workflow
+end_user -> OIDC_Service: GET /oauth2/v1/auth
+alt if login_hint not present:
+OIDC_Service -> end_user: Show login_hint UI
+end_user -> OIDC_Service: Submit phone number, username, etc.
+end
+OIDC_Service -> customer_server: POST flow_post_url
+customer_server-->end_user: Redirect to mobile check page
+end_user->customer_server: Visit mobile check page
+customer_server->customer_server: Check if End User\nis already on\na mobile device
+customer_server->iam_provider: Lookup user\nfor login_hint\ne.g. on DB, User\nDirectory, SCIM, etc.
+iam_provider->customer_server: send user profile
+customer_server->customer_server: resolve user profile to\na phone number
+note over end_user, iam_provider: Verification Request i.e. using PhoneCheck
+customer_server ->OIDC_Service: POST /phone_check/v0.2/checks
+OIDC_Service -> customer_server: check_id + check_url
+customer_server->OIDC_Service: PATCH /oidc/v0.1/flows/{flow_id}\n with check_url
+OIDC_Service->customer_server: 200 OK
+customer_server-->end_user: Redirect to\nqr_code_delegation_url
+note over end_user, iam_provider: Accepting the verification
+end_user->OIDC_Service: Visit QR code page
+alt if on End User not mobile device
+end_user->OIDC_Service: scan QR code with phone
+OIDC_Service->end_user: show Accept/Deny screen
+end
+alt if on End User is on mobile device
+OIDC_Service->end_user: show Accept/Deny screen
+end
+end_user->OIDC_Service: Press Accept
+note over end_user, iam_provider: QR code verification flow
+OIDC_Service-->end_user: Redirect with code
+end_user->customer_server: Follow redirect
+customer_server->OIDC_Service: exchange code for\nPhoneCheck result
+OIDC_Service->customer_server: PhoneCheck result\nmatch=true
+note over end_user, iam_provider: Complete Authentication Flow
+customer_server->OIDC_Service: PATCH /oidc/v0.1/flows/id\n with userinfo claims e.g.\n"sub: user_id"
+OIDC_Service --> end_user: Redirect to flow_result_url
+end
+end_user->customer_login: Follow redirect
+customer_login->OIDC_Service: POST /oauth2/v1/token\nwith code from previous step
+OIDC_Service->customer_login: ID token

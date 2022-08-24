@@ -1,0 +1,35 @@
+title Gluu <> tru.ID authentication
+
+actor End User
+participant Phone
+participant Desktop Browser
+participant Website
+participant Gluu Server
+participant "tru.ID <> Bridge\nWorkflow" as tru.ID
+
+
+End User->Desktop Browser: Press Login button
+Desktop Browser->Website:
+Website->Desktop Browser: redirect to OP
+Desktop Browser->Gluu Server:  /authorize?acr=tru.ID....
+Gluu Server->Desktop Browser: Display Page 1:\n UID: _____ / PW: ____
+End User->Desktop Browser: enter creds
+group step 1
+Desktop Browser->Gluu Server:POST page 1
+Gluu Server<->Gluu Server: validate pw
+Gluu Server->Desktop Browser: redirect to tru.ID auth endpoint
+end
+Desktop Browser->tru.ID: start bridge workflow
+note over tru.ID: Check bridge workflow\ngroup on bridge diagram
+tru.ID->Desktop Browser: redirect to Authentication Script URL with code
+Desktop Browser->Gluu Server:continue 
+
+group step 2
+Gluu Server ->Gluu Server: POST page 2
+Gluu Server->tru.ID: exchange code for ID token
+Gluu Server->Gluu Server: validate token
+end
+Gluu Server->Desktop Browser: redirect
+
+Desktop Browser->Website: redirect_uri
+Website->Desktop Browser: content
