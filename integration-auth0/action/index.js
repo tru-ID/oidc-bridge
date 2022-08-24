@@ -15,6 +15,12 @@ exports.onExecutePostLogin = async (event, api) => {
     return;
   }
 
+  const appBaseUrl = event.secrets.APP_BASE_URL;
+  if (!appBaseUrl.startsWith("https://")) {
+    api.access.deny(`the APP_BASE_URL must be https`);
+    return;
+  }
+
   const token = api.redirect.encodeToken({
     secret: event.secrets.AUTH0_SIGNATURE_SECRET,
     expiresInSeconds: 60,
@@ -24,7 +30,6 @@ exports.onExecutePostLogin = async (event, api) => {
     },
   });
 
-  const appBaseUrl = event.secrets.APP_BASE_URL;
   api.redirect.sendUserTo(`${appBaseUrl}/bridge/auth0/action/redirect`, {
     query: { session_token: token },
   });
