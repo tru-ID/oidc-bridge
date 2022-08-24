@@ -11,6 +11,10 @@ The current default verification rules are:
 
 To learn more how you can build your own bridge, check the [integration guide](https://developer.tru.id/docs/oidc/integration).
 
+Here is an example of how this bridge interacts with the different components:
+
+![bridge workflow](./docs/bridge-workflow.png)
+
 ## Pre-requisites
 
 You need to configure your tru.ID Project in order to use the OIDC API. You can do so by adding an extra
