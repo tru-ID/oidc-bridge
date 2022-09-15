@@ -43,6 +43,7 @@ full (`sample-ui`+`bridge`+`okta`) flow and how to populate them.
     - Change the **If no match is found** value to **Redirect to Okta sign-in page**
 
 Once you've created the identity provider, capture its IdP ID since it is necessary for the `sample-ui` configuration.
+
 ### Configure new Application to run a full test flow
 
 - Go to **Applications > Applications > Create App Integration**
