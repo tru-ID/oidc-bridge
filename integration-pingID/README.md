@@ -47,7 +47,7 @@ full (`bridge`+`davinci`) flow and how to populate them.
 
 You can add the connector to any flow you might already have or you can create a new flow.
 
-The connector takes the PingID username as input, which eventually gets resolved into a phone number.
+The connector takes the user's phone number as a username.
 
 ## Notes
 

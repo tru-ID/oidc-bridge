@@ -1,7 +1,5 @@
 package id.tru.oidc.sample.service.pingid;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 import id.tru.oidc.sample.service.IdpUserResolver;
@@ -10,28 +8,30 @@ import id.tru.oidc.sample.service.context.user.IdpUser;
 
 public class PingIdUserResolver implements IdpUserResolver {
 
-    private Map<String, PingIdUser> testUsers;
-
-    public PingIdUserResolver() {
-        this.testUsers = new HashMap<>();
-
-        String testEmail = "test@example.com";
-        String testPhone = "447580505540";
-        testUsers.put(testEmail, PingIdUser.of(testEmail, testPhone));
-    }
-
     @Override
     public Optional<IdpUser> findUserForContext(SampleContext ctx) {
-        String loginHint = ctx.getLoginHint();
+        // We are assuming the tru.ID connector runs after another factor
+        // e.g. knowledge factor a.k.a. user/pass authentication
+        //
+        // As such, the phone number can be extracted from the user profile
+        // and fed to the connector as the login_hint parameter.
+        //
+        // This avoids having to access whatever user directory the DaVinci
+        // instance is using
+        String phoneNumber = ctx.getLoginHint();
 
-        // FIXME this is just to test
-        return Optional.ofNullable(testUsers.get(loginHint));
+        return Optional.ofNullable(PingIdUser.of(phoneNumber));
     }
 
     @Override
     public Optional<IdpUser> findUserById(String userId) {
-        // FIXME this is just to test
-        return Optional.ofNullable(testUsers.get(userId));
+        // Again, the authenticator external user ID in DaVinci's case will
+        // have to be a phone number, as explained above
+        //
+        // Here we just highlight this for clarity
+        String phoneNumber = userId;
+
+        return Optional.ofNullable(PingIdUser.of(phoneNumber));
     }
 
 }
