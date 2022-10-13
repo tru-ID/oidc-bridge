@@ -22,7 +22,7 @@ full (`sample-ui`+`bridge`+`okta`) flow and how to populate them.
 - Give the project a name and click **Create Project**
 - Fill in the **OIDC** section with ([see an example](../bridge/README.md)):
     - OIDC bridge application public URL
-    - URL called after the bridge has handled the verification e.g. your app, etc.
+    - Okta tenant callback URL e.g. https://{tenantID}.okta.com/oauth2/v1/authorize/callback
 - Create **Authorization Code** credentials by clicking the **Generate New** button
 - Copy the `client_id` and the `client_secret` so you can use them in the next step.
 
@@ -44,7 +44,14 @@ full (`sample-ui`+`bridge`+`okta`) flow and how to populate them.
 
 Once you've created the identity provider, capture its IdP ID since it is necessary for the `sample-ui` configuration.
 
-### Configure new Application to run a full test flow
+## Create an Okta API token to resolve user profiles in the bridge
+
+- Sign in to your Okta tennant
+- Go to **Security > API > Tokens > Create Token**
+- Give it a name e.g., `bridge-resolver`
+- Copy the token value and use it as the value for the `SAMPLE_OKTA_API_KEY` environment variable
+
+### Configure new Application to run a full test flow (with the sample-ui as the Relying Party)
 
 - Go to **Applications > Applications > Create App Integration**
 - For **Sign-in method** choose the **OIDC - OpenID Connect**
