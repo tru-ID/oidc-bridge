@@ -88,7 +88,7 @@ public class MobileAwareController {
 
         contextRepository.save(ctx);
 
-        ModelAndView mav = new ModelAndView("redirect:oidc-login-check");
+        ModelAndView mav = new ModelAndView("redirect:/bridge/oidc-login/oidc-login-check");
         mav.addObject("flow_id", ctx.getFlowId());
         return mav;
     }
