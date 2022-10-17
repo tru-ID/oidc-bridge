@@ -47,6 +47,8 @@ public class MobileAwareController {
     private String totpUrl;
     @Value("${tru.oidc.pushUrl}")
     private String pushUrl;
+    @Value("${sample.url}")
+    private String samplePublicBaseUrl;
     @Autowired
     private SampleContextRepository contextRepository;
     @Autowired
@@ -88,7 +90,7 @@ public class MobileAwareController {
 
         contextRepository.save(ctx);
 
-        ModelAndView mav = new ModelAndView("redirect:/bridge/oidc-login/oidc-login-check");
+        ModelAndView mav = new ModelAndView("redirect:" + samplePublicBaseUrl + "/bridge/oidc-login/oidc-login-check");
         mav.addObject("flow_id", ctx.getFlowId());
         return mav;
     }
