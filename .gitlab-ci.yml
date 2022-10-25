@@ -1,4 +1,4 @@
 include:
   - project: '${CI_PROJECT_ROOT_NAMESPACE}/gitlab-ci'
-    ref: develop
+    ref: master
     file: '/services/oidc-bridge.yml'
