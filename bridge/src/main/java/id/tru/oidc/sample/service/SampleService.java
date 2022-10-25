@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 
 import id.tru.oidc.sample.service.context.SampleContext;
+import id.tru.oidc.sample.service.okta.OktaUser;
 
 @Service
 public class SampleService {
@@ -52,6 +53,16 @@ public class SampleService {
             // these claims will be included in the ID token
             userinfo.put("sub", userId);
             userinfo.put("phone_number_verified", true);
+
+            if (ctx.getUser() instanceof OktaUser) {
+                // workaround to make Okta's MFA enrollment through custom IDP work, see:
+                // https://help.okta.com/en-us/Content/Topics/Security/MFA_Custom_Factor.htm
+                //
+                // "For the OIDC response, the preferred_username claim is mapped to the Okta
+                // username."
+                userinfo.put("preferred_username", ctx.getUser()
+                                                      .getUsername());
+            }
 
             try {
                 oidcService.resolveFlow(ctx.getFlowId(), userinfo);
