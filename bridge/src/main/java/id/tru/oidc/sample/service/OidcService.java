@@ -34,9 +34,10 @@ public class OidcService {
         this.apiBaseUrl = apiBaseUrl;
     }
 
-    public void updateFlowForCheck(String flowId, String checkUrl) {
+    public void updateFlowForCheck(String flowId, String checkUrl, String issuerName) {
         var updateCheck = Map.of("op", "add", "path", "/check_url", "value", checkUrl);
-        var operations = List.of(updateCheck);
+        var updateIssuer = Map.of("op", "add", "path", "/issuer_name", "value", issuerName);
+        var operations = List.of(updateCheck, updateIssuer);
 
         String patchBody = null;
         try {
