@@ -1,3 +1,7 @@
 spring:
   application:
-    name: "oidc-sample"
+    name: "oidc-bridge"
+  cloud:
+    kubernetes:
+      client:
+        namespace: fake

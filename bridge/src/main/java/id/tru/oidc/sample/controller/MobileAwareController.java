@@ -47,6 +47,10 @@ public class MobileAwareController {
     private String totpUrl;
     @Value("${tru.oidc.pushUrl}")
     private String pushUrl;
+    @Value("${sample.url}")
+    private String samplePublicBaseUrl;
+    @Value("${sample.resolver.type:}")
+    private ResolverType resolverType;
     @Autowired
     private SampleContextRepository contextRepository;
     @Autowired
@@ -88,7 +92,7 @@ public class MobileAwareController {
 
         contextRepository.save(ctx);
 
-        ModelAndView mav = new ModelAndView("redirect:oidc-login-check");
+        ModelAndView mav = new ModelAndView("redirect:" + samplePublicBaseUrl + "/bridge/oidc-login-check");
         mav.addObject("flow_id", ctx.getFlowId());
         return mav;
     }
@@ -235,7 +239,7 @@ public class MobileAwareController {
             ctx.setCheckUrl(check.getCheckUrl());
             ctx.setVerificationType(VerificationType.PHONECHECK);
 
-            oidcService.updateFlowForCheck(ctx.getFlowId(), ctx.getCheckUrl());
+            oidcService.updateFlowForCheck(ctx.getFlowId(), ctx.getCheckUrl(), resolverType.getIssuerName());
         } catch (Exception e) {
             LOG.error("failed to handle WEB login flow for flowId={} userId={}", ctx.getFlowId(), ctx.getUser()
                                                                                                      .getId(),
@@ -294,6 +298,20 @@ public class MobileAwareController {
 
         public boolean isMobileFlow() {
             return mobileFlow;
+        }
+    }
+
+    enum ResolverType {
+        AUTH0("Auth0"), OKTA("Okta"), GLUU("Gluu"), PING_ID("Ping ID");
+
+        private String issuerName;
+
+        private ResolverType(String issuerName) {
+            this.issuerName = issuerName;
+        }
+
+        public String getIssuerName() {
+            return issuerName;
         }
     }
 }
