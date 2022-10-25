@@ -28,7 +28,7 @@
 <body>
     <main>
         <img class="mb-1" src="https://developer.tru.id/media/tru-logo-dark.svg" alt="tru.ID">
-        <h1 class="mb-3 h3 fw-normal">Checking your device...</h1>
+        <h1 class="mt-3 mb-3 h3 fw-normal">Checking your device...</h1>
         <form id="mobile-check-form" action="#" th:action="@{/bridge/oidc-login-check}" method="post">
             <input type="hidden" id="mobile_flow" name="mobile_flow" value="false">
             <input type="hidden" id="flow_id" name="flow_id" th:value="${flow_id}">
