@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: "sample-ui"
+  cloud:
+    kubernetes:
+      client:
+        namespace: fake
