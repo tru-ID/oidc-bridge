@@ -68,7 +68,18 @@ public class HomeController {
         var response = restTemplate.getForEntity(url, PublicFactor[].class);
         List<PublicFactor> factors = Arrays.asList(response.getBody());
 
-        mv.addObject("factors", factors);
+        // sketchy way of checking the authenticator status
+        var status = new AuthenticatorStatus();
+        if (factors.isEmpty()) {
+            status.setRegistered(false);
+            status.setActive(false);
+        } else {
+            status.setRegistered(true);
+            status.setActive(factors.stream()
+                                    .allMatch(f -> "ACTIVE".equals(f.status)));
+        }
+
+        mv.addObject("status", status);
 
         return mv;
     }
@@ -78,5 +89,26 @@ public class HomeController {
         String factorId;
         String type;
         String status;
+    }
+
+    static class AuthenticatorStatus {
+        private boolean registered;
+        private boolean active;
+
+        public boolean isRegistered() {
+            return registered;
+        }
+
+        public boolean isActive() {
+            return active;
+        }
+
+        public void setActive(boolean active) {
+            this.active = active;
+        }
+
+        public void setRegistered(boolean registered) {
+            this.registered = registered;
+        }
     }
 }

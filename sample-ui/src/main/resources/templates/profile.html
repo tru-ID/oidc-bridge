@@ -20,13 +20,13 @@
         </section>
         <section class="container">
             <h2>Authenticator</h2>
-            <div th:if="${!factors.isEmpty()}" style="display: flex; flex-wrap: wrap;  align-items: baseline; justify-content: space-around;">
-                <p>Enabled <i data-feather="lock"></i></p>
+            <div th:if="${status.isRegistered()}" style="display: flex; flex-wrap: wrap;  align-items: baseline; justify-content: space-around;">
+                <p>Enabled<span th:if="${!status.isActive()}"> <em data-tooltip="You might have reset your authenticator app">(Inactive)</em> </span><i data-feather="lock"></i></p>
                 <form th:action="@{/sample-ui/authenticator/remove}" method="post" style="margin-bottom: 0;">
                   <button id="remove" type="submit" class="secondary">Remove</button>
                 </form>
             </div>
-            <div th:if="${factors.isEmpty()}" style="display: flex; flex-wrap: wrap;  align-items: baseline; justify-content: space-around;">
+            <div th:if="${!status.isRegistered()}" style="display: flex; flex-wrap: wrap;  align-items: baseline; justify-content: space-around;">
                 <p>Disabled <i data-feather="unlock"></i></p>
                 <form th:action="@{/sample-ui/authenticator/onboard}" method="post" style="margin-bottom: 0;">
                   <button id="register" type="submit">Register</button>
