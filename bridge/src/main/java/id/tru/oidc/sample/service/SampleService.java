@@ -32,7 +32,8 @@ public class SampleService {
             break;
         case PUSH:
             // here it's mix of both
-            verificationSuccessful = ctx.getMatch() && "VERIFIED".equals(ctx.getChallengeStatus());
+            // verificationSuccessful = ctx.getMatch() && "VERIFIED".equals(ctx.getChallengeStatus());
+            verificationSuccessful = "VERIFIED".equals(ctx.getChallengeStatus());
             break;
         case TOTP:
             // looking at the challenge status is enought

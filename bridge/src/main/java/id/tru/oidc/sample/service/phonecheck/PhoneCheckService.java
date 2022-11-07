@@ -66,14 +66,16 @@ public class PhoneCheckService {
     public Check createCheckForPush(String phoneNumber, String reference) {
         CheckCreate cc = new CheckCreate(phoneNumber);
         cc.setCallbackUrl(authenticatorCallback);
-        cc.setRedirectUrl(sampleBaseUrl + "/bridge/check/callback_push");
+        // cc.setRedirectUrl(sampleBaseUrl + "/bridge/check/callback_push");
         cc.setReferenceId(reference);
 
         LOG.debug("creating check[push] for {}", cc);
 
         Check check = null;
         try {
-            check = truClient.postForObject(phoneCheckUrl, cc, Check.class);
+            // HACK: use v0.1
+            String v01CheckUrl = phoneCheckUrl.replace("v0.2", "v0.1");
+            check = truClient.postForObject(v01CheckUrl, cc, Check.class);
             check.setCheckUrl(phoneCheckUrl + "/" + check.getCheckId() + "/redirect");
         } catch (RestClientException e) {
             LOG.error("failed to create check[push] for phoneNumber={} with reference={}", phoneNumber, reference, e);
