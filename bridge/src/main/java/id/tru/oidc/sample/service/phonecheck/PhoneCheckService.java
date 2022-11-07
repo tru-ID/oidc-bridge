@@ -76,7 +76,7 @@ public class PhoneCheckService {
             // HACK: use v0.1
             String v01CheckUrl = phoneCheckUrl.replace("v0.2", "v0.1");
             check = truClient.postForObject(v01CheckUrl, cc, Check.class);
-            check.setCheckUrl(phoneCheckUrl + "/" + check.getCheckId() + "/redirect");
+            check.setCheckUrl(v01CheckUrl + "/" + check.getCheckId() + "/redirect");
         } catch (RestClientException e) {
             LOG.error("failed to create check[push] for phoneNumber={} with reference={}", phoneNumber, reference, e);
             throw e;
