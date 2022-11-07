@@ -1,5 +1,6 @@
 package id.tru.oidc.sample.controller;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -70,11 +71,7 @@ public class ApiController {
     @PostMapping("/user/{id}/factors/disable")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void disableFactors(@PathVariable("id") String userId) {
-        List<Factor> activeFactors = authenticatorService.findFactorsByUserId(userId)
-                                                         .stream()
-                                                         .filter(f -> f.getStatus()
-                                                                       .equals("ACTIVE"))
-                                                         .collect(Collectors.toList());
+        Collection<Factor> activeFactors = authenticatorService.findFactorsByUserId(userId);
 
         for (Factor f : activeFactors) {
             LOG.info("Disabling factor {} for user {}", f, userId);
