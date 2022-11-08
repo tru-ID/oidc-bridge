@@ -76,7 +76,7 @@ public class HomeController {
         } else {
             status.setRegistered(true);
             status.setActive(factors.stream()
-                                    .allMatch(f -> "ACTIVE".equals(f.status)));
+                                    .allMatch(f -> "ACTIVE".equals(f.getStatus())));
         }
 
         mv.addObject("status", status);
@@ -89,6 +89,18 @@ public class HomeController {
         String factorId;
         String type;
         String status;
+
+        public String getFactorId() {
+            return factorId;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public String getType() {
+            return type;
+        }
     }
 
     static class AuthenticatorStatus {
