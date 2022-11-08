@@ -93,6 +93,18 @@ public class ApiController {
 
             return pf;
         }
+
+        public String getFactorId() {
+            return factorId;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public String getStatus() {
+            return status;
+        }
     }
 
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
