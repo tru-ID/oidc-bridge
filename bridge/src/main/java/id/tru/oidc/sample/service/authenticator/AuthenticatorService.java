@@ -1,15 +1,10 @@
 package id.tru.oidc.sample.service.authenticator;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +18,12 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 import id.tru.oidc.sample.util.RandomStrings;
 
@@ -143,8 +144,18 @@ public class AuthenticatorService {
         FactorSearchResponse response = null;
         try {
             response = truClient.getForObject(requestUrl, FactorSearchResponse.class);
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
+                if (e.getResponseBodyAsString()
+                     .contains("Project has no authenticator config")) {
+                    // it's fine if the project doesn't have an authenticator config
+                    LOG.warn("no authenticator config found - no factors to try");
+                    return Collections.emptyList();
+                }
+            }
+            throw e;
         } catch (RestClientException e) {
-            LOG.error("failed to find factors on for userId={}", userId, e);
+            LOG.error("failed to find factors for userId={}", userId, e);
             throw e;
         }
 
@@ -284,6 +295,15 @@ public class AuthenticatorService {
 
         public String getChallengeId() {
             return challengeId;
+        }
+    }
+
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+    private static class ApiError {
+        private String detail;
+
+        public String getDetail() {
+            return detail;
         }
     }
 }
