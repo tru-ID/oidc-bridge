@@ -204,7 +204,7 @@ public class MobileAwareController {
 
                 String challengeId = authenticatorService.createPushChallenge(factor.getFactorId(), check.getCheckId(),
                         check.getCheckUrl(),
-                        "Please confirm your " + resolverType.getIssuerName()  + " login");
+                        "Please confirm your " + resolverType.getIssuerName() + " login");
                 ctx.setChallengeId(challengeId);
                 ctx.setVerificationType(VerificationType.PUSH);
 
