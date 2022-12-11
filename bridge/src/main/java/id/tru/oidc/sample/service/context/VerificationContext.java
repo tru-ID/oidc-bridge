@@ -2,20 +2,31 @@ package id.tru.oidc.sample.service.context;
 
 import java.util.UUID;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.Indexed;
+
 import id.tru.oidc.sample.service.context.user.IdpUser;
 
+@RedisHash(value = "verificationContexts")
 public class VerificationContext {
+    @Id
     private String contextId;
 
+    @Indexed
     private String loginHint;
+    @Indexed
     private String state;
+    @Indexed
     private String flowId;
 
     private boolean mobileFlow;
 
     private IdpUser user;
     private VerificationType verificationType;
+    @Indexed
     private String checkId;
+    @Indexed
     private String challengeId;
 
     private boolean match;

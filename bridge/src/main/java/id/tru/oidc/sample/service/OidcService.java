@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,6 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @Service
 public class OidcService {
 
@@ -25,16 +25,21 @@ public class OidcService {
     private final RestTemplate truClient;
     private final ObjectMapper objectMapper;
     private final String apiBaseUrl;
+    private final String checkBaseUrl;
 
     public OidcService(@Qualifier("truClient") RestTemplate truClient,
             @Value("${tru.api}") String apiBaseUrl,
+            @Value("${tru.phoneCheck}") String checkBaseUrl,
             ObjectMapper objectMapper) {
         this.truClient = truClient;
         this.objectMapper = objectMapper;
         this.apiBaseUrl = apiBaseUrl;
+        this.checkBaseUrl = checkBaseUrl;
     }
 
-    public void updateFlowForCheck(String flowId, String checkUrl, String issuerName) {
+    public void updateFlowForCheck(String flowId, String checkId, String issuerName) {
+        var checkUrl = checkBaseUrl + "/" + checkId + "/redirect";
+
         var updateCheck = Map.of("op", "add", "path", "/check_url", "value", checkUrl);
         var updateIssuer = Map.of("op", "add", "path", "/issuer_name", "value", issuerName);
         var operations = List.of(updateCheck, updateIssuer);

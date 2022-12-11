@@ -14,7 +14,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import id.tru.oidc.sample.service.IdpUserResolver;
-import id.tru.oidc.sample.service.context.SampleContext;
+import id.tru.oidc.sample.service.context.VerificationContext;
 import id.tru.oidc.sample.service.context.user.IdpUser;
 
 public class GluuUserResolver implements IdpUserResolver {
@@ -50,7 +50,7 @@ public class GluuUserResolver implements IdpUserResolver {
     }
 
     @Override
-    public Optional<IdpUser> findUserForContext(SampleContext ctx) {
+    public Optional<IdpUser> findUserForContext(VerificationContext ctx) {
         // in Gluu's case, the login hint will be the username, as it comes from the py
         // script installed as a person authentication script
         String username = ctx.getLoginHint();

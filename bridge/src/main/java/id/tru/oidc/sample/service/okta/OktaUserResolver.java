@@ -12,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import id.tru.oidc.sample.service.IdpUserResolver;
-import id.tru.oidc.sample.service.context.SampleContext;
+import id.tru.oidc.sample.service.context.VerificationContext;
 import id.tru.oidc.sample.service.context.user.IdpUser;
 
 public class OktaUserResolver implements IdpUserResolver {
@@ -27,7 +27,7 @@ public class OktaUserResolver implements IdpUserResolver {
     }
 
     @Override
-    public Optional<IdpUser> findUserForContext(SampleContext ctx) {
+    public Optional<IdpUser> findUserForContext(VerificationContext ctx) {
         String loginHint = ctx.getLoginHint();
 
         if (!StringUtils.hasLength(loginHint)) {

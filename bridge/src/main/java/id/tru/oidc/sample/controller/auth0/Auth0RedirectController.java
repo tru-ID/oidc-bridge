@@ -42,8 +42,8 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
 import id.tru.oidc.sample.service.auth0.Auth0User;
-import id.tru.oidc.sample.service.context.SampleContext;
-import id.tru.oidc.sample.service.context.SampleContextRepository;
+import id.tru.oidc.sample.service.context.VerificationContext;
+import id.tru.oidc.sample.service.context.VerificationContextRepository;
 
 @Controller
 @RequestMapping("/bridge/auth0")
@@ -52,7 +52,7 @@ public class Auth0RedirectController {
 
     private final ObjectMapper objectMapper;
     private final HttpClient client;
-    private final SampleContextRepository contextRepository;
+    private final VerificationContextRepository contextRepository;
 
     private final String servicePublicBaseUrl;
     private final String truApiBaseUrl;
@@ -64,7 +64,7 @@ public class Auth0RedirectController {
     public Auth0RedirectController(
             ObjectMapper objectMapper,
             HttpClient client,
-            SampleContextRepository contextRepository,
+            VerificationContextRepository contextRepository,
             @Value("${sample.url}") String servicePublicBaseUrl,
             @Value("${tru.api}") String truApiBaseUrl,
             @Value("${tru.oidc.clientId}") String oidcClientId,
@@ -89,7 +89,7 @@ public class Auth0RedirectController {
 
         var user = Auth0User.ofJwtClaims(payload);
 
-        var ctx = SampleContext.ofLoginHint(user.getId());
+        var ctx = VerificationContext.ofLoginHint(user.getId());
         ctx.setUser(user);
         ctx.setState(state);
 
@@ -123,9 +123,9 @@ public class Auth0RedirectController {
     }
 
     private ModelAndView handleCode(String code, String state) {
-        SampleContext ctx = contextRepository.findByState(state)
-                                             .orElseThrow(() -> new ResponseStatusException(HttpStatus.GONE,
-                                                     "failed to find context for this state"));
+        VerificationContext ctx = contextRepository.findByState(state)
+                                                   .orElseThrow(() -> new ResponseStatusException(HttpStatus.GONE,
+                                                           "failed to find context for this state"));
 
         URI tokenUri = URI.create(truApiBaseUrl + "/oauth2/v1/token");
 
@@ -253,9 +253,9 @@ public class Auth0RedirectController {
     }
 
     private ModelAndView handleError(CallbackParams params) {
-        SampleContext ctx = contextRepository.findByState(params.getState())
-                                             .orElseThrow(() -> new ResponseStatusException(HttpStatus.GONE,
-                                                     "failed to find context for this state"));
+        VerificationContext ctx = contextRepository.findByState(params.getState())
+                                                   .orElseThrow(() -> new ResponseStatusException(HttpStatus.GONE,
+                                                           "failed to find context for this state"));
         String error = params.getError();
         String errorDescription = params.getErrorDescription();
 

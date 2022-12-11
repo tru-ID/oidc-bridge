@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 
-import id.tru.oidc.sample.service.context.SampleContext;
+import id.tru.oidc.sample.service.context.VerificationContext;
 import id.tru.oidc.sample.service.okta.OktaUser;
 
 @Service
@@ -21,18 +21,18 @@ public class SampleService {
         this.oidcService = oidcService;
     }
 
-    public void patchToOIDC(SampleContext ctx) {
+    public void patchToOIDC(VerificationContext ctx) {
         LOG.info("patching context {}", ctx);
 
         boolean verificationSuccessful = false;
         switch (ctx.getVerificationType()) {
         case PHONECHECK:
             // looking at the match field is enough
-            verificationSuccessful = ctx.getMatch();
+            verificationSuccessful = ctx.isMatch();
             break;
         case PUSH:
             // here it's mix of both
-            verificationSuccessful = ctx.getMatch() && "VERIFIED".equals(ctx.getChallengeStatus());
+            verificationSuccessful = ctx.isMatch() && "VERIFIED".equals(ctx.getChallengeStatus());
             break;
         case TOTP:
             // looking at the challenge status is enought
@@ -67,7 +67,7 @@ public class SampleService {
             try {
                 oidcService.resolveFlow(ctx.getFlowId(), userinfo);
             } catch (RestClientException e) {
-                LOG.error("failed to resolve the login flow match={} flowId={}", ctx.getMatch(), ctx.getFlowId(), e);
+                LOG.error("failed to resolve the login flow match={} flowId={}", ctx.isMatch(), ctx.getFlowId(), e);
                 throw new RuntimeException(e);
             }
         } else {
@@ -75,7 +75,7 @@ public class SampleService {
             try {
                 oidcService.rejectFlow(ctx.getFlowId());
             } catch (RestClientException e) {
-                LOG.error("failed to reject the login flow match={} flowId={}", ctx.getMatch(), ctx.getFlowId(), e);
+                LOG.error("failed to reject the login flow match={} flowId={}", ctx.isMatch(), ctx.getFlowId(), e);
                 throw new RuntimeException(e);
             }
         }

@@ -3,13 +3,13 @@ package id.tru.oidc.sample.service.pingid;
 import java.util.Optional;
 
 import id.tru.oidc.sample.service.IdpUserResolver;
-import id.tru.oidc.sample.service.context.SampleContext;
+import id.tru.oidc.sample.service.context.VerificationContext;
 import id.tru.oidc.sample.service.context.user.IdpUser;
 
 public class PingIdUserResolver implements IdpUserResolver {
 
     @Override
-    public Optional<IdpUser> findUserForContext(SampleContext ctx) {
+    public Optional<IdpUser> findUserForContext(VerificationContext ctx) {
         // We are assuming the tru.ID connector runs after another factor
         // e.g. knowledge factor a.k.a. user/pass authentication
         //

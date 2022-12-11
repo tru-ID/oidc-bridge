@@ -29,8 +29,8 @@ import id.tru.oidc.sample.service.IdpUserResolver;
 import id.tru.oidc.sample.service.OidcService;
 import id.tru.oidc.sample.service.authenticator.AuthenticatorService;
 import id.tru.oidc.sample.service.authenticator.Factor;
-import id.tru.oidc.sample.service.context.SampleContext;
-import id.tru.oidc.sample.service.context.SampleContextRepository;
+import id.tru.oidc.sample.service.context.VerificationContext;
+import id.tru.oidc.sample.service.context.VerificationContextRepository;
 import id.tru.oidc.sample.service.context.VerificationType;
 import id.tru.oidc.sample.service.context.user.IdpUser;
 import id.tru.oidc.sample.service.phonecheck.Check;
@@ -52,7 +52,7 @@ public class MobileAwareController {
     @Value("${sample.resolver.type:}")
     private ResolverType resolverType;
     @Autowired
-    private SampleContextRepository contextRepository;
+    private VerificationContextRepository contextRepository;
     @Autowired
     private IdpUserResolver idpUserResolver;
     @Autowired
@@ -72,23 +72,21 @@ public class MobileAwareController {
 
         String loginHint = uc.getLoginHint();
         String flowId = uc.getFlowId();
-        String flowPatchUrl = uc.getFlowPatchUrl();
         String state = uc.getState();
 
         // context with a login_hint might've been created before (e.g. auth0 action)
         // otherwise create brand new context
-        SampleContext ctx = contextRepository.findByLoginHint(loginHint)
-                                             .map(c -> {
-                                                 c.setFlowId(flowId);
-                                                 c.setFlowCallbackUrl(flowPatchUrl);
-                                                 c.setState(state);
-                                                 return c;
-                                             })
-                                             .orElseGet(() -> {
-                                                 var c = SampleContext.ofFlow(flowId, flowPatchUrl, state);
-                                                 c.setLoginHint(loginHint);
-                                                 return c;
-                                             });
+        VerificationContext ctx = contextRepository.findByLoginHint(loginHint)
+                                                   .map(c -> {
+                                                       c.setFlowId(flowId);
+                                                       c.setState(state);
+                                                       return c;
+                                                   })
+                                                   .orElseGet(() -> {
+                                                       return VerificationContext.ofFlow(flowId,
+                                                               loginHint,
+                                                               state);
+                                                   });
 
         contextRepository.save(ctx);
 
@@ -106,9 +104,9 @@ public class MobileAwareController {
 
     @PostMapping("/oidc-login-check")
     public ResponseEntity<?> handleMobileCheck(MobileCheckForm form) {
-        SampleContext ctx = contextRepository.findByFlowId(form.getFlowId())
-                                             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                                                     "login flow not found"));
+        VerificationContext ctx = contextRepository.findByFlowId(form.getFlowId())
+                                                   .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                                           "login flow not found: flow_id=" + form.getFlowId()));
 
         // let us know if this is a mobile flow so we can handle it appropriately
         ctx.setMobileFlow(form.isMobileFlow());
@@ -120,6 +118,7 @@ public class MobileAwareController {
         if (user == null) {
             LOG.warn("failed to resolve user for flowId={} loginHint={}", ctx.getFlowId(), ctx.getLoginHint());
             oidcService.rejectFlow(ctx.getFlowId());
+            contextRepository.delete(ctx);
 
             // reject flow by sending to any oidcUrl
             String redirectUrl = UriComponentsBuilder.fromUriString(qrCodeUrl)
@@ -135,10 +134,8 @@ public class MobileAwareController {
         }
 
         ctx.setUser(user);
-
         String phoneNumber = user.getPhoneNumber()
                                  .orElseThrow();
-        ctx.setPhoneNumber(phoneNumber);
 
         LOG.info("found user id={} with phone={}", user.getId(), phoneNumber);
 
@@ -165,7 +162,7 @@ public class MobileAwareController {
         return handlePhoneCheckFactor(ctx);
     }
 
-    private ResponseEntity<?> handleAuthenticatorFactor(Factor factor, SampleContext ctx) {
+    private ResponseEntity<?> handleAuthenticatorFactor(Factor factor, VerificationContext ctx) {
         if ("TOTP".equals(factor.getType())) {
             LOG.info("handling TOTP factor factorId={} for userId={}", factor.getFactorId(), ctx.getUser()
                                                                                                 .getId());
@@ -198,9 +195,11 @@ public class MobileAwareController {
             LOG.info("handling PUSH factor factorId={} for user_id={}", factor.getFactorId(), ctx.getUser()
                                                                                                  .getId());
             try {
-                Check check = phoneCheckService.createCheckForPush(ctx.getPhoneNumber(), ctx.getFlowId());
+                Check check = phoneCheckService.createCheckForPush(ctx.getUser()
+                                                                      .getPhoneNumber()
+                                                                      .orElseThrow(),
+                        ctx.getFlowId());
                 ctx.setCheckId(check.getCheckId());
-                ctx.setCheckUrl(check.getCheckUrl());
 
                 String challengeId = authenticatorService.createPushChallenge(factor.getFactorId(), check.getCheckId(),
                         check.getCheckUrl(),
@@ -232,14 +231,16 @@ public class MobileAwareController {
         }
     }
 
-    private ResponseEntity<?> handlePhoneCheckFactor(SampleContext ctx) {
+    private ResponseEntity<?> handlePhoneCheckFactor(VerificationContext ctx) {
         try {
-            Check check = phoneCheckService.createCheck(ctx.getPhoneNumber(), ctx.getFlowId());
+            Check check = phoneCheckService.createCheck(ctx.getUser()
+                                                           .getPhoneNumber()
+                                                           .orElseThrow(),
+                    ctx.getFlowId());
             ctx.setCheckId(check.getCheckId());
-            ctx.setCheckUrl(check.getCheckUrl());
             ctx.setVerificationType(VerificationType.PHONECHECK);
 
-            oidcService.updateFlowForCheck(ctx.getFlowId(), ctx.getCheckUrl(), resolverType.getIssuerName());
+            oidcService.updateFlowForCheck(ctx.getFlowId(), ctx.getCheckId(), resolverType.getIssuerName());
         } catch (Exception e) {
             LOG.error("failed to handle WEB login flow for flowId={} userId={}", ctx.getFlowId(), ctx.getUser()
                                                                                                      .getId(),

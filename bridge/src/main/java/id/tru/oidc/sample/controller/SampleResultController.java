@@ -22,8 +22,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import id.tru.oidc.sample.dto.ChallengeResult;
 import id.tru.oidc.sample.service.SampleService;
-import id.tru.oidc.sample.service.context.SampleContext;
-import id.tru.oidc.sample.service.context.SampleContextRepository;
+import id.tru.oidc.sample.service.auth0.Auth0User;
+import id.tru.oidc.sample.service.context.VerificationContext;
+import id.tru.oidc.sample.service.context.VerificationContextRepository;
 import id.tru.oidc.sample.service.phonecheck.Check;
 import id.tru.oidc.sample.service.phonecheck.PhoneCheckService;
 
@@ -40,7 +41,7 @@ public class SampleResultController {
     @Autowired
     private PhoneCheckService phoneCheckService;
     @Autowired
-    private SampleContextRepository contextRepository;
+    private VerificationContextRepository contextRepository;
 
     @GetMapping(value = "/check/callback")
     public ModelAndView checkCallback(@RequestParam(value = "check_id", required = true) String checkId,
@@ -48,9 +49,9 @@ public class SampleResultController {
             @RequestParam(value = "error_description", required = false) String errorDescription,
             @RequestParam(value = "error", required = false) String error) {
         LOG.info("check callback: check_id {} code {} error {}", checkId, code, error);
-        SampleContext ctx = contextRepository.findByCheckId(checkId)
-                                             .orElseThrow(() -> new ResponseStatusException(HttpStatus.GONE,
-                                                     "failed to find context for this checkId"));
+        VerificationContext ctx = contextRepository.findByCheckId(checkId)
+                                                   .orElseThrow(() -> new ResponseStatusException(HttpStatus.GONE,
+                                                           "failed to find context for this checkId"));
 
         if (code != null) {
             LOG.debug("redeeming check result for checkId={}", checkId);
@@ -88,8 +89,9 @@ public class SampleResultController {
             mv = new ModelAndView("callback");
             mv.addObject("message", "Verification failed");
         } finally {
-            // not called on auth0 context
-            // contextRepository.delete(ctx);
+            if (!(ctx.getUser() instanceof Auth0User)) {
+                contextRepository.delete(ctx);
+            }
         }
 
         return mv;
@@ -104,9 +106,9 @@ public class SampleResultController {
         if (checkId != null && code != null) {
             LOG.debug("redeeming check[push] result for checkId={}", checkId);
             Check check = phoneCheckService.fetchCheckResult(checkId, code);
-            SampleContext ctx = contextRepository.findByCheckId(checkId)
-                                                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.GONE,
-                                                         "failed to find context for this checkId"));
+            VerificationContext ctx = contextRepository.findByCheckId(checkId)
+                                                       .orElseThrow(() -> new ResponseStatusException(HttpStatus.GONE,
+                                                               "failed to find context for this checkId"));
             ctx.setMatch(check.getMatch());
             ctx.setCheckStatus(check.getStatus());
             contextRepository.save(ctx);
@@ -122,9 +124,9 @@ public class SampleResultController {
     public void challengeCallback(@RequestHeader HttpHeaders headers, @RequestBody ChallengeResult body) {
         LOG.info("challenge callback: {} {}", headers, body);
         if (verifySignature(headers) && body != null) {
-            SampleContext ctx = contextRepository.findByChallengeId(body.getChallengeId())
-                                                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.GONE,
-                                                         "failed to find context for this challengeId"));
+            VerificationContext ctx = contextRepository.findByChallengeId(body.getChallengeId())
+                                                       .orElseThrow(() -> new ResponseStatusException(HttpStatus.GONE,
+                                                               "failed to find context for this challengeId"));
 
             ctx.setChallengeStatus(body.getStatus());
 
@@ -133,8 +135,9 @@ public class SampleResultController {
             } catch (Exception e) {
                 LOG.error("failed to update challenge status: abandoning challenge with id={}", body.getChallengeId());
             } finally {
-                // not called on auth0 context
-                // contextRepository.delete(ctx);
+                if (!(ctx.getUser() instanceof Auth0User)) {
+                    contextRepository.delete(ctx);
+                }
             }
         }
     }

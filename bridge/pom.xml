@@ -20,6 +20,14 @@
     <spring-cloud.version>2021.0.4</spring-cloud.version>
   </properties>
 
+  <!-- Used for our Redis Data Helpers -->
+  <repositories>
+    <repository>
+      <id>gitlab-maven</id>
+      <url>https://gitlab.com/api/v4/groups/4auth/-/packages/maven</url>
+    </repository>
+  </repositories>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -61,6 +69,11 @@
     <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-kubernetes-fabric8-config</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>net._4uth.common</groupId>
+      <artifactId>redis</artifactId>
+      <version>0.2.2</version>
     </dependency>
   </dependencies>
 
