@@ -8,7 +8,7 @@ import org.springframework.data.redis.core.index.Indexed;
 
 import id.tru.oidc.sample.service.context.user.IdpUser;
 
-@RedisHash(value = "verificationContexts")
+@RedisHash(value = "verificationContexts", timeToLive = 360L) // 6 min TTL
 public class VerificationContext {
     @Id
     private String contextId;
