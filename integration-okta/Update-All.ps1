@@ -9,6 +9,11 @@ $ErrorActionPreference = "Stop"
 
 $NgrokTargetUri = $Config.SAMPLE_PUBLIC_URL
 
+if ($Config.ContainsKey("SAMPLE_CONTEXT_PATH")) {
+    Write-Debug "Updating public url with context path"
+    $NgrokTargetUri = $NgrokTargetUri + $Config.SAMPLE_CONTEXT_PATH
+}
+
 $Bytes = [System.Text.Encoding]::UTF8.GetBytes("$($Config.TRU_WORKSPACE_CLIENT_ID):$($Config.TRU_WORKSPACE_CLIENT_SECRET)")
 $BasicAuth = [Convert]::ToBase64String($Bytes)
 
