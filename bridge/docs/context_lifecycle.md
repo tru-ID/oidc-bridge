@@ -79,7 +79,7 @@ TOTP and PUSH factors:
 - `state: str`
 - `flow_id: str`
 - `mobile_flow: boolean`
-- `user: IdpUser` (not GDPR friendly if we host it)
+- `user: IdpUser`
 - `verification_type: PCK | TOTP | PUSH`
 - `check_id: str`
 - `challenge_id: str`
