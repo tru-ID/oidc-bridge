@@ -19,7 +19,15 @@ services:
     image: tru.id/oidc-bridge:local
     env_file:
       - ${OIDC_CONFIG_FILE}
+    environment:
+      - JAVA_TOOL_OPTIONS=-Dspring.profiles.active=redis
+      - SPRING_REDIS_HOST=redis
     # uncomment if you are running gluu example and need to load a trust store
     # make sure you have the 'javaTrustStore.jks' file in the ./integration-gluu folder
     # volumes:
     #   - ./integration-gluu/:/opt/truid
+
+  redis:
+    image: redis:alpine
+    ports:
+      - 6379:6379
