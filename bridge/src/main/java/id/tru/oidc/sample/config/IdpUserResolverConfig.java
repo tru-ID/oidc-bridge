@@ -19,6 +19,7 @@ import id.tru.oidc.sample.service.auth0.Auth0UserResolver;
 import id.tru.oidc.sample.service.gluu.GluuUserResolver;
 import id.tru.oidc.sample.service.okta.OktaUserResolver;
 import id.tru.oidc.sample.service.pingid.PingIdUserResolver;
+import id.tru.oidc.sample.service.pingid.PingOneUserResolver;
 
 @Configuration
 public class IdpUserResolverConfig {
@@ -45,6 +46,18 @@ public class IdpUserResolverConfig {
     private String gluuClientId;
     @Value("${sample.gluu.scim.clientSecret:}")
     private String gluuClientSecret;
+
+    // PingOne
+    @Value("${sample.pingone.apiBaseUrl:}")
+    private String pingOneApiBaseUrl;
+    @Value("${sample.pingone.authBaseUrl:}")
+    private String pingOneAuthBaseUrl;
+    @Value("${sample.pingone.environmentId:}")
+    private String pingOneEnvironmentId;
+    @Value("${sample.pingone.clientId}")
+    private String pingOneClientId;
+    @Value("${sample.pingone.clientSecret}")
+    private String pingOneClientSecret;
 
     private RestTemplate gluuClient() {
         String registrationId = "gluu";
@@ -109,6 +122,43 @@ public class IdpUserResolverConfig {
         return restTemplate;
     }
 
+    private RestTemplate pingManagementApiClient() {
+        String registrationId = "pingOneManagementApi";
+        var client = ClientRegistration.withRegistrationId(registrationId)
+                                       .clientId(pingOneClientId)
+                                       .clientSecret(pingOneClientSecret)
+                                       .clientAuthenticationMethod(
+                                               ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                                       .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+                                       .scope("openid")
+                                       .tokenUri(pingOneAuthBaseUrl + "/" + pingOneEnvironmentId + "/as/token")
+                                       .build();
+
+        var clientRegistrationRepository = new InMemoryClientRegistrationRepository(client);
+        var authorizedClientService = new InMemoryOAuth2AuthorizedClientService(clientRegistrationRepository);
+        var authorizedClientManager = new AuthorizedClientServiceOAuth2AuthorizedClientManager(
+                clientRegistrationRepository, authorizedClientService);
+
+        var authorizeRequest = OAuth2AuthorizeRequest.withClientRegistrationId(registrationId)
+                                                     .principal("none")
+                                                     .build();
+        var restTemplate = new RestTemplate();
+        restTemplate.getInterceptors()
+                    .add((request, body, execution) -> {
+                        OAuth2AuthorizedClient authorizedClient = authorizedClientManager.authorize(authorizeRequest);
+                        String token = authorizedClient.getAccessToken()
+                                                       .getTokenValue();
+                        request.getHeaders()
+                               .setBearerAuth(token);
+                        return execution.execute(request, body);
+                    });
+
+        // to allow PATCH to work
+        restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+
+        return restTemplate;
+    }
+
     @Bean
     IdpUserResolver idpUserResolver() {
         switch (resolverType) {
@@ -121,12 +171,14 @@ public class IdpUserResolverConfig {
         case PING_ID:
             // FIXME this is not really using the pingID directory
             return new PingIdUserResolver();
+        case PING_ONE:
+            return new PingOneUserResolver(pingOneApiBaseUrl, pingOneEnvironmentId, pingManagementApiClient());
         default:
             throw new IllegalStateException("unknown resolver type: " + resolverType);
         }
     }
 
     enum ResolverType {
-        AUTH0, OKTA, GLUU, PING_ID
+        AUTH0, OKTA, GLUU, PING_ID, PING_ONE
     }
 }
