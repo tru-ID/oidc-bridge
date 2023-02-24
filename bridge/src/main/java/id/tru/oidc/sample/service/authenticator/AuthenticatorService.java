@@ -297,13 +297,4 @@ public class AuthenticatorService {
             return challengeId;
         }
     }
-
-    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-    private static class ApiError {
-        private String detail;
-
-        public String getDetail() {
-            return detail;
-        }
-    }
 }
