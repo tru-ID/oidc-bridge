@@ -303,7 +303,11 @@ public class MobileAwareController {
     }
 
     enum ResolverType {
-        AUTH0("Auth0"), OKTA("Okta"), GLUU("Gluu"), PING_ID("Ping ID");
+        AUTH0("Auth0"),
+        OKTA("Okta"),
+        GLUU("Gluu"),
+        PING_ID("Ping ID"),
+        PING_ONE("Ping ID");
 
         private String issuerName;
 

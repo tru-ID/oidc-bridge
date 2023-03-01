@@ -64,6 +64,8 @@ For more IAM specific instructions:
 * [Auth0](./integration-auth0/README.md)
 * [Okta](./integration-okta/README.md)
 * [Gluu](./integration-gluu/README.md)
+* [PingID using DaVinci](./integration-pingID/README.md)
+* [PingID using PingOne](./integration-pingOne/README.md)
 
 4. Run the compose file with that configuration
 
