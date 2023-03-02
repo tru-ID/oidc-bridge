@@ -24,6 +24,9 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 public class AuthenticatorController {
     private static Logger LOG = LoggerFactory.getLogger(AuthenticatorController.class);
 
+    @Value("${sample-ui.url}")
+    private String sampleUiPublicBaseUrl;
+
     @Value("${tru.id.bridge.api.base-url}")
     private String bridgeApiBaseUrl;
 
@@ -37,6 +40,8 @@ public class AuthenticatorController {
         URI uri = UriComponentsBuilder.fromUriString(bridgeApiBaseUrl)
                                       .pathSegment("user", "{id}", "factors")
                                       .build(userId);
+
+        LOG.info("Hitting {}", uri.toString());
 
         RegistrationIntent ri = restTemplate.postForObject(uri, null, RegistrationIntent.class);
 
@@ -62,7 +67,7 @@ public class AuthenticatorController {
 
         restTemplate.postForObject(uri, body, Void.class);
 
-        return "redirect:/sample-ui/profile";
+        return "redirect:" + sampleUiPublicBaseUrl + "/sample-ui/profile";
     }
 
     @PostMapping("/remove")
@@ -77,7 +82,7 @@ public class AuthenticatorController {
 
         restTemplate.postForObject(uri, null, Void.class);
 
-        return "redirect:/sample-ui/profile";
+        return "redirect:" + sampleUiPublicBaseUrl + "/sample-ui/profile";
     }
 
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
