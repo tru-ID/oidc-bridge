@@ -25,7 +25,7 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeRequests()
             .mvcMatchers(HttpMethod.GET, "/sample-ui", "/sample-ui/login", "/sample-ui/login/**",
-                    "/sample-ui/assets/**", "/sample-ui/error", "/sample-ui/logout")
+                    "/sample-ui/assets/**", "/sample-ui/error", "/sample-ui/logout", "/actuator/**")
             .permitAll()
             .anyRequest()
             .authenticated();
