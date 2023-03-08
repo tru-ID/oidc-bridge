@@ -12,8 +12,11 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity()
 public class SecurityConfig {
+
+    @Value("${sample-ui.url}")
+    private String sampleUiPublicBaseUrl;
 
     @Value("${tru.id.cors.allowed-origins}")
     private String[] allowedOrigins;
@@ -38,15 +41,21 @@ public class SecurityConfig {
             .logoutUrl("/sample-ui/logout")
             .logoutSuccessUrl(logoutSuccessUrl);
 
-        http.oauth2Login(oauth2 -> oauth2.loginPage("/sample-ui/login/iam")
-                                         .defaultSuccessUrl("/sample-ui")
+        // because some of these urls will be called in a 302, we want to make sure they
+        // are both servlet context aware and hostname aware
+        //
+        // without the 'withBaseUrl' method, they'll only be context aware and some
+        // redirects might fail (similarly to spring MVC 'redirect:<url>' return
+        // requiring the full hostname)
+        http.oauth2Login(oauth2 -> oauth2.loginPage(withBaseUrl("/sample-ui/login/iam"))
+                                         .defaultSuccessUrl(withBaseUrl("/sample-ui"))
                                          .authorizationEndpoint()
-                                         .baseUri("/sample-ui/login")
+                                         .baseUri(withBaseUrl("/sample-ui/login"))
                                          .and()
                                          .redirectionEndpoint()
-                                         .baseUri("/sample-ui/login/callback/*")
+                                         .baseUri(withBaseUrl("/sample-ui/login/callback/*"))
                                          .and()
-                                         .failureUrl("/sample-ui/error"));
+                                         .failureUrl(withBaseUrl("/sample-ui/error")));
         http.cors()
             .configurationSource(corsConfigurationSource());
 
@@ -59,5 +68,9 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/sample-ui/**", configuration);
         return source;
+    }
+
+    private String withBaseUrl(String relativeUrl) {
+        return sampleUiPublicBaseUrl + relativeUrl;
     }
 }
