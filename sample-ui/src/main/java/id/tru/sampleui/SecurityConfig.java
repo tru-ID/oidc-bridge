@@ -15,6 +15,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Value("${tru.id.cors.enabled:true}")
+    private boolean corsEnabled;
+
     @Value("${tru.id.cors.allowed-origins}")
     private String[] allowedOrigins;
 
@@ -47,8 +50,11 @@ public class SecurityConfig {
                                          .baseUri("/sample-ui/login/callback/*")
                                          .and()
                                          .failureUrl("/sample-ui/error"));
-        http.cors()
-            .configurationSource(corsConfigurationSource());
+
+        if (corsEnabled) {
+            http.cors()
+                .configurationSource(corsConfigurationSource());
+        }
 
         return http.build();
     }
