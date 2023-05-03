@@ -44,15 +44,15 @@ public class SecurityConfig {
             .logoutUrl("/sample-ui/logout")
             .logoutSuccessUrl(logoutSuccessUrl);
 
-        http.oauth2Login(oauth2 -> oauth2.loginPage(fixUrl("/sample-ui/login/iam"))
-                                         .defaultSuccessUrl(fixUrl("/sample-ui"))
+        http.oauth2Login(oauth2 -> oauth2.loginPage("/sample-ui/login/iam")
+                                         .defaultSuccessUrl("/sample-ui")
                                          .authorizationEndpoint()
-                                         .baseUri(fixUrl("/sample-ui/login"))
+                                         .baseUri("/sample-ui/login")
                                          .and()
                                          .redirectionEndpoint()
-                                         .baseUri(fixUrl("/sample-ui/login/callback/*"))
+                                         .baseUri("/sample-ui/login/callback/*")
                                          .and()
-                                         .failureUrl(fixUrl("/sample-ui/error")));
+                                         .failureUrl("/sample-ui/error"));
 
         if (corsEnabled) {
             http.cors()
@@ -60,10 +60,6 @@ public class SecurityConfig {
         }
 
         return http.build();
-    }
-
-    private String fixUrl(String url) {
-        return basePublicUrl + url;
     }
 
     private CorsConfigurationSource corsConfigurationSource() {
