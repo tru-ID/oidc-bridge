@@ -24,6 +24,9 @@ public class SecurityConfig {
     @Value("${tru.id.iam.logout-success-url}")
     private String logoutSuccessUrl;
 
+    @Value("${sample-ui.url}")
+    private String basePublicUrl;
+
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeRequests()
@@ -41,15 +44,15 @@ public class SecurityConfig {
             .logoutUrl("/sample-ui/logout")
             .logoutSuccessUrl(logoutSuccessUrl);
 
-        http.oauth2Login(oauth2 -> oauth2.loginPage("/sample-ui/login/iam")
-                                         .defaultSuccessUrl("/sample-ui")
+        http.oauth2Login(oauth2 -> oauth2.loginPage(fixUrl("/sample-ui/login/iam"))
+                                         .defaultSuccessUrl(fixUrl("/sample-ui"))
                                          .authorizationEndpoint()
-                                         .baseUri("/sample-ui/login")
+                                         .baseUri(fixUrl("/sample-ui/login"))
                                          .and()
                                          .redirectionEndpoint()
-                                         .baseUri("/sample-ui/login/callback/*")
+                                         .baseUri(fixUrl("/sample-ui/login/callback/*"))
                                          .and()
-                                         .failureUrl("/sample-ui/error"));
+                                         .failureUrl(fixUrl("/sample-ui/error")));
 
         if (corsEnabled) {
             http.cors()
@@ -57,6 +60,10 @@ public class SecurityConfig {
         }
 
         return http.build();
+    }
+
+    private String fixUrl(String url) {
+        return basePublicUrl + url;
     }
 
     private CorsConfigurationSource corsConfigurationSource() {
