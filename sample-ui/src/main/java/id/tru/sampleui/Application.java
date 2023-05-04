@@ -4,6 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
+import net._4uth.common.redis.config.EnableSentinel;
+
+@EnableSentinel
 @EnableRedisHttpSession
 @SpringBootApplication
 public class Application {
